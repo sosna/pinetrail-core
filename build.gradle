@@ -1,0 +1,47 @@
+plugins {
+  id 'java-library'
+  id 'com.diffplug.spotless' version '5.6.1'
+  id 'jacoco'
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  implementation 'org.slf4j:slf4j-api:1.7.30'
+  implementation 'org.hibernate:hibernate-validator:5.4.3.Final'
+  implementation 'javax.el:javax.el-api:3.0.0'
+  runtimeOnly 'org.glassfish.web:javax.el:2.2.6'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+version = '1.0.0-SNAPSHOT'
+
+test {
+  useJUnitPlatform()
+  finalizedBy jacocoTestReport 
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+  }
+}
+
+jar {
+  manifest {
+    attributes('Implementation-Title': project.name,
+               'Implementation-Version': project.version)
+  }
+}
+
+java {
+  //withJavadocJar()
+  withSourcesJar()
+}

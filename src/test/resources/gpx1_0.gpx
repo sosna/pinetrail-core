@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0" creator="GPSBabel - http://www.gpsbabel.org" xmlns="http://www.topografix.com/GPX/1/0">
+  <time>2015-05-29T20:32:37.100Z</time>
+  <bounds minlat="49.965904000" minlon="7.910922000" maxlat="50.043000000" maxlon="8.280734000"/>
+  <trk>
+    <name>Track</name>
+    <trkseg>
+      <trkpt lat="49.993740000" lon="8.277416000">
+        <ele>149.000000</ele>
+        <time>2015-05-14T10:53:08.985Z</time>
+        <course>0.000000</course>
+        <speed>0.000000</speed>
+      </trkpt>
+      <trkpt lat="49.993668000" lon="8.277310000">
+        <ele>173.000000</ele>
+        <time>2015-05-14T10:54:16.351Z</time>
+        <course>212.735840</course>
+        <speed>1.191046</speed>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
