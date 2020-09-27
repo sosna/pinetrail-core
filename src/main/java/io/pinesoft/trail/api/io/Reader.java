@@ -31,7 +31,7 @@ import java.util.function.Function;
  *
  * @author Xavier Sosnovsky
  * @see GpsRecord
- * @see io.pinesoft.trail.error.ExecutionError
+ * @see io.pinesoft.trail.utils.error.ExecutionError
  */
 public interface Reader extends Function<Path, Set<GpsRecord>> {
 
