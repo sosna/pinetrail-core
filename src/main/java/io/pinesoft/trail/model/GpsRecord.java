@@ -34,7 +34,6 @@ public final class GpsRecord implements Comparable<GpsRecord> {
   private final Double latitude;
   private final Double longitude;
   private final Double elevation;
-  private final transient int hashcode;
 
   private GpsRecord(
       final Instant time, final Double longitude, final Double latitude, final Double elevation) {
@@ -42,7 +41,6 @@ public final class GpsRecord implements Comparable<GpsRecord> {
     this.latitude = latitude;
     this.longitude = longitude;
     this.elevation = elevation;
-    this.hashcode = Objects.hash(time, longitude, latitude, elevation);
   }
 
   /**
@@ -125,7 +123,7 @@ public final class GpsRecord implements Comparable<GpsRecord> {
 
   @Override
   public int hashCode() {
-    return hashcode;
+    return Objects.hash(time, longitude, latitude, elevation);
   }
 
   @Override

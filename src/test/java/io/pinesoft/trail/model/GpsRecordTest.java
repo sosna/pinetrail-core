@@ -24,6 +24,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -99,90 +100,8 @@ public class GpsRecordTest {
   }
 
   @Test
-  public void equalityNull() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    assertNotEquals(instance, null);
-  }
-
-  @Test
-  public void equalityTime() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(Instant.MAX, longitude, latitude, elevation);
-    assertNotEquals(instance1, instance2);
-  }
-
-  @Test
-  public void equalityLongitude() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, 0.0, latitude, elevation);
-    assertNotEquals(instance1, instance2);
-  }
-
-  @Test
-  public void equalityLatitude() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, longitude, 0.0, elevation);
-    assertNotEquals(instance1, instance2);
-  }
-
-  @Test
-  public void equalityElevation() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, longitude, latitude, 0.0);
-    assertNotEquals(instance1, instance2);
-  }
-
-  @Test
-  public void equalityOK() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, longitude, latitude, elevation);
-    assertEquals(instance1, instance2);
-  }
-
-  @Test
-  public void hashCodeOK() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, longitude, latitude, elevation);
-    assertEquals(instance1.hashCode(), instance2.hashCode());
-  }
-
-  @Test
-  public void hashCodeNOK() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance1 = newGpsRecord(time, longitude, latitude, elevation);
-    final GpsRecord instance2 = newGpsRecord(time, longitude, latitude, 0.0);
-    assertNotEquals(instance1.hashCode(), instance2.hashCode());
+  public void equalsContract() {
+    EqualsVerifier.forClass(GpsRecord.class).verify();
   }
 
   @Test
@@ -344,6 +263,39 @@ public class GpsRecordTest {
     final GpsRecord instance = newGpsRecord(time, Double.NaN, latitude, elevation);
     Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
     assertEquals(2, constraintViolations.size());
+  }
+
+  @Test
+  public void before() {
+    final Instant t1 = Instant.EPOCH;
+    final Instant t2 = Instant.MIN;
+    final double latitude = 90.0;
+    final double elevation = 630.28;
+    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
+    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    assertEquals(1, pt1.compareTo(pt2));
+  }
+
+  @Test
+  public void after() {
+    final Instant t1 = Instant.EPOCH;
+    final Instant t2 = Instant.MAX;
+    final double latitude = 90.0;
+    final double elevation = 630.28;
+    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
+    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    assertEquals(-1, pt1.compareTo(pt2));
+  }
+
+  @Test
+  public void same() {
+    final Instant t1 = Instant.EPOCH;
+    final Instant t2 = Instant.EPOCH;
+    final double latitude = 90.0;
+    final double elevation = 630.28;
+    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
+    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    assertEquals(0, pt1.compareTo(pt2));
   }
 
   private GpsRecord newGpsRecord(
