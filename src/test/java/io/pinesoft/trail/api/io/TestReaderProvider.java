@@ -40,7 +40,7 @@ public class TestReaderProvider implements ReaderProvider {
 
     @Override
     public Set<GpsRecord> apply(final Path fileLocation) {
-      return Collections.EMPTY_SET;
+      return Collections.emptySet();
     }
   }
 }
