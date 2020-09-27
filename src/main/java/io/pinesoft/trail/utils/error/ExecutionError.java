@@ -29,6 +29,7 @@ import org.slf4j.Marker;
  */
 public final class ExecutionError extends RuntimeException {
 
+  private static final long serialVersionUID = -2958938847028125286L;
   private final Marker marker;
   private final Actions action;
   private final StatusCodes errorCode;
