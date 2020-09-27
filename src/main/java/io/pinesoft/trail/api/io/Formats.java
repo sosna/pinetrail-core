@@ -20,6 +20,7 @@ import io.pinesoft.trail.utils.log.Actions;
 import io.pinesoft.trail.utils.log.Markers;
 import io.pinesoft.trail.utils.log.StatusCodes;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -59,7 +60,7 @@ public enum Formats {
    */
   public static Formats of(final Path fileLocation) {
     try {
-      final String content = new String(Files.readAllBytes(fileLocation));
+      final String content = new String(Files.readAllBytes(fileLocation), StandardCharsets.UTF_8);
       if (content.contains("http://www.topografix.com/GPX/1/1")) {
         return GPX_1_1;
       } else if (content.contains("http://www.topografix.com/GPX/1/0")) {
