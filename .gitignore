@@ -8,4 +8,5 @@ gradle-app.setting
 .vscode/
 .settings
 .project
+.idea
 bin/

@@ -16,7 +16,7 @@
  */
 package io.pinesoft.trail.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
 import java.util.Set;
@@ -37,53 +37,6 @@ public class GpsRecordTest {
   public static void setUp() {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
-  }
-
-  @Test
-  public void getTime() {
-    final Instant time = Instant.EPOCH;
-    final GpsRecord instance = newGpsRecord(time, 12.9946215637, 47.5913904235, 630.28);
-    assertEquals(time, instance.getTime());
-  }
-
-  @Test
-  public void getLatitude() {
-    final double latitude = 47.5913904235;
-    final GpsRecord instance = newGpsRecord(Instant.EPOCH, 12.9946215637, latitude, 630.28);
-    assertEquals(latitude, instance.getLatitude(), 0.0);
-  }
-
-  @Test
-  public void getLongitude() {
-    final double longitude = 12.9946215637;
-    final GpsRecord instance = newGpsRecord(Instant.EPOCH, longitude, 47.5913904235, 630.28);
-    assertEquals(longitude, instance.getLongitude(), 0.0);
-  }
-
-  @Test
-  public void getElevation() {
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(Instant.EPOCH, 12.9946215637, 47.5913904235, elevation);
-    assertEquals(elevation, instance.getElevation(), 0.0);
-  }
-
-  @Test
-  public void elevationDefaultTo0() {
-    final GpsRecord instance = GpsRecord.of(Instant.EPOCH, 12.9946215637, 47.5913904235);
-    assertEquals(Double.NaN, instance.getElevation(), 0.0);
-  }
-
-  @Test
-  public void nullElevationDefaultTo0() {
-    final GpsRecord instance = newGpsRecord(Instant.EPOCH, 12.9946215637, 47.5913904235, null);
-    assertEquals(Double.NaN, instance.getElevation(), 0.0);
-  }
-
-  @Test
-  public void nanElevationDefaultTo0() {
-    final GpsRecord instance =
-        newGpsRecord(Instant.EPOCH, 12.9946215637, 47.5913904235, Double.NaN);
-    assertEquals(Double.NaN, instance.getElevation(), 0.0);
   }
 
   @Test
@@ -114,11 +67,11 @@ public class GpsRecordTest {
     assertEquals(
         "GpsRecord{time="
             + time
-            + ", latitude="
-            + latitude
-            + ", "
-            + "longitude="
+            + ", longitude="
             + longitude
+            + ", "
+            + "latitude="
+            + latitude
             + ", elevation="
             + elevation
             + '}',
@@ -137,7 +90,7 @@ public class GpsRecordTest {
   }
 
   @Test
-  public void valTimeFuture() {
+  public void valTimePast() {
     final Instant time = Instant.MAX;
     final double latitude = -89;
     final double longitude = 12.9946215637;
@@ -154,119 +107,19 @@ public class GpsRecordTest {
   }
 
   @Test
-  public void valLatitudeMin() {
+  public void valNullCoordinates() {
     final Instant time = Instant.EPOCH;
-    final double latitude = -90.1;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
+    final GpsRecord instance = GpsRecord.of(time, null);
     Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
     assertEquals(1, constraintViolations.size());
     constraintViolations.forEach(
         (prob) -> {
-          assertEquals(
-              "Latitude must be superior or equal to -90 degrees. Got -90.1.", prob.getMessage());
+          assertEquals("The coordinates of the GpsRecord must be supplied.", prob.getMessage());
         });
   }
 
   @Test
-  public void valLatitudeMax() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 90.1;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals(
-              "Latitude must be inferior or equal to 90 degrees. Got 90.1.", prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valLatitudeNull() {
-    final Instant time = Instant.EPOCH;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, null, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals("Latitude must be supplied.", prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valLatitudeNaN() {
-    final Instant time = Instant.EPOCH;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, Double.NaN, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(2, constraintViolations.size());
-  }
-
-  @Test
-  public void valLongitudeMin() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = -90.0;
-    final double longitude = -180.1;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals(
-              "Longitude must be superior or equal to -180 degrees. Got -180.1.",
-              prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valLongitudeMax() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 90.0;
-    final double longitude = 180.0;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals("Longitude must be inferior to 180 degrees. Got 180.0.", prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valLongitudeNull() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 90.0;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, null, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals("Longitude must be supplied.", prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valLongitudeNaN() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 90.0;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, Double.NaN, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(2, constraintViolations.size());
-  }
-
-  @Test
-  public void before() {
+  public void compareBefore() {
     final Instant t1 = Instant.EPOCH;
     final Instant t2 = Instant.MIN;
     final double latitude = 90.0;
@@ -277,7 +130,7 @@ public class GpsRecordTest {
   }
 
   @Test
-  public void after() {
+  public void compareAfter() {
     final Instant t1 = Instant.EPOCH;
     final Instant t2 = Instant.MAX;
     final double latitude = 90.0;
@@ -288,7 +141,7 @@ public class GpsRecordTest {
   }
 
   @Test
-  public void same() {
+  public void compareSame() {
     final Instant t1 = Instant.EPOCH;
     final Instant t2 = Instant.EPOCH;
     final double latitude = 90.0;
@@ -300,6 +153,11 @@ public class GpsRecordTest {
 
   private GpsRecord newGpsRecord(
       final Instant time, final Double longitude, final Double latitude, final Double elevation) {
-    return GpsRecord.of(time, longitude, latitude, elevation);
+    return GpsRecord.of(time, newCoordinates(longitude, latitude, elevation));
+  }
+
+  private Coordinates newCoordinates(
+      final Double longitude, final Double latitude, final Double elevation) {
+    return Coordinates.of(longitude, latitude, elevation);
   }
 }

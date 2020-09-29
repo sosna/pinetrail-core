@@ -18,8 +18,6 @@ package io.pinesoft.trail.model;
 
 import java.time.Instant;
 import java.util.Objects;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
@@ -31,43 +29,24 @@ import javax.validation.constraints.Past;
 public final class GpsRecord implements Comparable<GpsRecord> {
 
   private final Instant time;
-  private final Double latitude;
-  private final Double longitude;
-  private final Double elevation;
 
-  private GpsRecord(
-      final Instant time, final Double longitude, final Double latitude, final Double elevation) {
+  @NotNull(message = "{Model.GpsRecord.Coordinates.NotNull}")
+  private final Coordinates coordinates;
+
+  private GpsRecord(final Instant time, final Coordinates coordinates) {
     this.time = time;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.elevation = elevation;
+    this.coordinates = coordinates;
   }
 
   /**
    * Creates an instance of GpsRecord.
    *
    * @param time the point in time when the coordinates were measured.
-   * @param longitude the longitude of the point, in decimal degrees (WGS84 datum).
-   * @param latitude the latitude of the point, in decimal degrees (WGS84 datum).
-   * @param elevation the elevation of the point, in meters.
+   * @param coordinates the coordinates of the point, in decimal degrees (WGS84 datum).
    * @return a new GpsRecord
    */
-  public static GpsRecord of(
-      final Instant time, final Double longitude, final Double latitude, final Double elevation) {
-    final double ele = elevation == null ? Double.NaN : elevation;
-    return new GpsRecord(time, longitude, latitude, ele);
-  }
-
-  /**
-   * Creates an instance of GpsRecord.
-   *
-   * @param time the point in time when the coordinates were measured.
-   * @param longitude the longitude of the point, in decimal degrees (WGS84 datum).
-   * @param latitude the latitude of the point, in decimal degrees (WGS84 datum).
-   * @return a new GpsRecord
-   */
-  public static GpsRecord of(final Instant time, final Double longitude, final Double latitude) {
-    return new GpsRecord(time, longitude, latitude, Double.NaN);
+  public static GpsRecord of(final Instant time, final Coordinates coordinates) {
+    return new GpsRecord(time, coordinates);
   }
 
   /**
@@ -77,25 +56,22 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    *
    * @return the point in time when the coordinates were measured
    */
-  @Past(message = "{Model.Waypoint.Time.Past}")
-  @NotNull(message = "{Model.Waypoint.Time.NotNull}")
+  @Past(message = "{Model.GpsRecord.Time.Past}")
+  @NotNull(message = "{Model.GpsRecord.Time.NotNull}")
   public Instant getTime() {
     return time;
   }
 
   /**
-   * The latitude of the point, in decimal degrees (WGS84 datum).
+   * /** The latitude of the point, in decimal degrees (WGS84 datum).
    *
    * <p>The latitude of the point, in decimal degrees. The value cannot be null and must be between
    * or equal to -90.0 and 90.0 degrees.
    *
    * @return the latitude of the point
    */
-  @NotNull(message = "{Model.Coordinates.Latitude.NotNull}")
-  @DecimalMax(value = "90", message = "{Model.Coordinates.Latitude.MaxValue}")
-  @DecimalMin(value = "-90", message = "{Model.Coordinates.Latitude.MinValue}")
   public Double getLatitude() {
-    return latitude;
+    return coordinates == null ? null : coordinates.getLatitude();
   }
 
   /**
@@ -105,11 +81,8 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    *
    * @return the longitude of the point
    */
-  @NotNull(message = "{Model.Coordinates.Longitude.NotNull}")
-  @DecimalMax(value = "180", inclusive = false, message = "{Model.Coordinates.Longitude.MaxValue}")
-  @DecimalMin(value = "-180", message = "{Model.Coordinates.Longitude.MinValue}")
   public Double getLongitude() {
-    return longitude;
+    return coordinates == null ? null : coordinates.getLongitude();
   }
 
   /**
@@ -118,12 +91,12 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    * @return the elevation of the point, in meters
    */
   public Double getElevation() {
-    return elevation;
+    return coordinates == null ? null : coordinates.getElevation();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(time, longitude, latitude, elevation);
+    return Objects.hash(time, coordinates);
   }
 
   @Override
@@ -136,22 +109,21 @@ public final class GpsRecord implements Comparable<GpsRecord> {
     }
     final GpsRecord other = (GpsRecord) obj;
     return Objects.equals(this.time, other.getTime())
-        && Objects.equals(this.latitude, other.getLatitude())
-        && Objects.equals(this.longitude, other.getLongitude())
-        && Objects.equals(this.elevation, other.getElevation());
+        && Objects.equals(this.getLongitude(), other.getLongitude())
+        && Objects.equals(this.getLatitude(), other.getLatitude())
+        && Objects.equals(this.getElevation(), other.getElevation());
   }
 
   @Override
   public String toString() {
     return "GpsRecord{time="
         + time
+        + ", longitude="
+        + coordinates.getLongitude()
         + ", latitude="
-        + latitude
-        + ", "
-        + "longitude="
-        + longitude
+        + coordinates.getLatitude()
         + ", elevation="
-        + elevation
+        + coordinates.getElevation()
         + '}';
   }
 
