@@ -19,7 +19,7 @@ public class GpsRecordTest {
 
   @BeforeAll
   public static void setUp() {
-    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
   }
 
