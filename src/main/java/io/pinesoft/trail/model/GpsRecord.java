@@ -55,7 +55,7 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    * @return the latitude of the point
    */
   public Double getLatitude() {
-    return coordinates == null ? null : coordinates.getLatitude();
+    return coordinates.getLatitude();
   }
 
   /**
@@ -66,7 +66,7 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    * @return the longitude of the point
    */
   public Double getLongitude() {
-    return coordinates == null ? null : coordinates.getLongitude();
+    return coordinates.getLongitude();
   }
 
   /**
@@ -75,7 +75,7 @@ public final class GpsRecord implements Comparable<GpsRecord> {
    * @return the elevation of the point, in meters
    */
   public Double getElevation() {
-    return coordinates == null ? null : coordinates.getElevation();
+    return coordinates.getElevation();
   }
 
   @Override
@@ -92,10 +92,9 @@ public final class GpsRecord implements Comparable<GpsRecord> {
       return false;
     }
     final GpsRecord other = (GpsRecord) obj;
-    return Objects.equals(this.time, other.getTime())
-        && Objects.equals(this.getLongitude(), other.getLongitude())
-        && Objects.equals(this.getLatitude(), other.getLatitude())
-        && Objects.equals(this.getElevation(), other.getElevation());
+    final Coordinates c2 =
+        Coordinates.of(other.getLongitude(), other.getLatitude(), other.getElevation());
+    return Objects.equals(this.time, other.getTime()) && Objects.equals(this.coordinates, c2);
   }
 
   @Override
