@@ -11,8 +11,9 @@ repositories {
 
 dependencies {
   implementation 'org.slf4j:slf4j-api:1.7.30'
-  implementation 'org.hibernate:hibernate-validator:5.4.3.Final'
-  runtimeOnly 'org.glassfish.web:javax.el:2.2.6'
+  implementation 'org.hibernate:hibernate-validator:6.1.5.Final'
+  implementation 'javax.el:javax.el-api:3.0.0'
+  implementation 'org.glassfish.web:javax.el:2.2.6'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
   testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.4.2'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
