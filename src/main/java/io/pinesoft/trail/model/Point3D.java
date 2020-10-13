@@ -9,7 +9,7 @@ package io.pinesoft.trail.model;
  * <p>Longitude must be must be superior or equal to -180.0 and inferior to 180.0 degrees, while
  * latitude must be between or equal to -90.0 and 90.0 degrees.
  *
- * <p>Use the {@link #of(double, double, double)} or {@link #of(Point2D, double}) methods to create
+ * <p>Use the {@link #of(double, double, double)} or {@link #of(Point2D, double)}) methods to create
  * an immutable instance of a point.
  */
 public interface Point3D extends Point2D {
@@ -29,7 +29,7 @@ public interface Point3D extends Point2D {
    * @param longitude the longitude of the point, in decimal degrees (WGS84 datum).
    * @param latitude the latitude of the point, in decimal degrees (WGS84 datum).
    * @param elevation the elevation of the point, in meters.
-   * @throws IllegalArgumentException in case longitude or latitude are not within the expected *
+   * @throws IllegalArgumentException in case longitude or latitude are not within the expected
    *     range.
    * @return a new instance of Point3D
    */
