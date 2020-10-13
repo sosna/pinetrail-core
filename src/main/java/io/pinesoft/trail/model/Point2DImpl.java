@@ -1,6 +1,5 @@
 package io.pinesoft.trail.model;
 
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 class Point2DImpl implements Point2D {
@@ -34,21 +33,24 @@ class Point2DImpl implements Point2D {
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    if (obj == null) {
+  public boolean equals(final Object other) {
+    if (other instanceof Point2DImpl) {
+      Point2DImpl that = (Point2DImpl) other;
+      return that.canEqual(this)
+          && Double.compare(this.latitude, that.getLatitude()) == 0
+          && Double.compare(this.longitude, that.getLongitude()) == 0;
+    } else {
       return false;
     }
-    if (!(obj instanceof Point2D)) {
-      return false;
-    }
-    final Point2D other = (Point2D) obj;
-    return Objects.equals(this.latitude, other.getLatitude())
-        && Objects.equals(this.longitude, other.getLongitude());
   }
 
   @Override
   public String toString() {
     return "Point2D{longitude=" + longitude + ", " + "latitude=" + latitude + '}';
+  }
+
+  boolean canEqual(final Object other) {
+    return (other instanceof Point2DImpl);
   }
 
   private int calculateHash() {

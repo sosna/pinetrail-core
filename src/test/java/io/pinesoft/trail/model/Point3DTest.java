@@ -5,8 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-public class CoordinatesTest {
+public abstract class Point3DTest<T extends Point3D> extends Point2DTest<T> {
 
+  @Override
   @Test
   public void createInstance() {
     final double latitude = 48.5913904235;
@@ -18,13 +19,16 @@ public class CoordinatesTest {
     assertEquals(elevation, instance.getElevation(), 0.0);
   }
 
+  @Override
   @Test
   public void equalsContract() {
-    EqualsVerifier.forClass(Point3D.class)
-        .withCachedHashCode("cachedCode", "calculateHash", Point3D.of(56.7, 43.2, 106.12))
+    EqualsVerifier.forClass(Point3DImpl.class)
+        .withCachedHashCode("cachedCode", "calculateHash", new Point3DImpl(56.7, 43.2, 106.12))
+        .withRedefinedSuperclass()
         .verify();
   }
 
+  @Override
   @Test
   public void toStringOutput() {
     final double latitude = 47.5913904235;
@@ -32,7 +36,7 @@ public class CoordinatesTest {
     final double elevation = 630.28;
     final Point3D instance = newInstance(longitude, latitude, elevation);
     assertEquals(
-        "Coordinates{longitude="
+        "Point3D{longitude="
             + longitude
             + ", "
             + "latitude="
@@ -43,7 +47,5 @@ public class CoordinatesTest {
         instance.toString());
   }
 
-  private Point3D newInstance(final Double lon, final Double lat, final Double ele) {
-    return Point3D.of(lon, lat, ele);
-  }
+  protected abstract T newInstance(final double lon, final double lat, final double ele);
 }
