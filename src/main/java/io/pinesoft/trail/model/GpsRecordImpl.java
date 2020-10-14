@@ -61,7 +61,9 @@ final class GpsRecordImpl extends Point3DImpl implements GpsRecord {
   }
 
   private int calculateHash() {
-    int result = super.hashCode();
+    int result = Double.hashCode(this.getLongitude());
+    result = 31 * result + Double.hashCode(this.getLatitude());
+    result = 31 * result + Double.hashCode(this.getElevation());
     result = 31 * result + Long.hashCode(time);
     return result;
   }

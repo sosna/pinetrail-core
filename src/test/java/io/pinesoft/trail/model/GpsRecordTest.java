@@ -26,7 +26,13 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   @Test
   public void equalsContract() {
-    EqualsVerifier.forClass(GpsRecord.class).verify();
+    EqualsVerifier.forClass(GpsRecordImpl.class)
+        .withCachedHashCode(
+            "cachedCode",
+            "calculateHash",
+            new GpsRecordImpl(56.7, 43.2, 106.12, Instant.now().toEpochMilli()))
+        .withRedefinedSuperclass()
+        .verify();
   }
 
   @Test
