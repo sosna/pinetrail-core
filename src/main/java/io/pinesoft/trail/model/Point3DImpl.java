@@ -50,7 +50,8 @@ class Point3DImpl extends Point2DImpl implements Point3D {
   }
 
   private int calculateHash() {
-    int result = super.hashCode();
+    int result = Double.hashCode(this.getLongitude());
+    result = 31 * result + Double.hashCode(this.getLatitude());
     result = 31 * result + Double.hashCode(elevation);
     return result;
   }

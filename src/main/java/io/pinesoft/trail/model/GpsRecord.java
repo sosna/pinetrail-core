@@ -1,117 +1,45 @@
 package io.pinesoft.trail.model;
 
-import java.time.Instant;
-import java.util.Objects;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-
 /**
- * An immutable instance of a GPS Log Record (time and coordinates).
+ * A GPS Log Record (time and 3D coordinates).
+ *
+ * <p>The longitude and latitude are expressed in decimal degrees with WGS84 datum. The elevation is
+ * expressed in meters, above or below the WGS 84 reference ellipsoid.
+ *
+ * <p>Longitude must be must be superior or equal to -180.0 and inferior to 180.0 degrees, while
+ * latitude must be between or equal to -90.0 and 90.0 degrees.
+ *
+ * <p>Use the {@link #of(double, double, double, long)} method to create an immutable instance of a
+ * GpsRecord.
  *
  * @author Xavier Sosnovsky
  */
-public final class GpsRecord implements Comparable<GpsRecord> {
-
-  private final Instant time;
-
-  @NotNull(message = "{Model.GpsRecord.Coordinates.NotNull}")
-  private final Coordinates coordinates;
-
-  private GpsRecord(final Instant time, final Coordinates coordinates) {
-    this.time = time;
-    this.coordinates = coordinates;
-  }
+public interface GpsRecord extends Point3D, Comparable<GpsRecord> {
 
   /**
-   * Creates an instance of GpsRecord.
+   * The time when the coordinates were measured, as number of milliseconds from the * epoch of
+   * 1970-01-01T00:00:00Z
    *
-   * @param time the point in time when the coordinates were measured.
-   * @param coordinates the coordinates of the point, in decimal degrees (WGS84 datum).
-   * @return a new GpsRecord
-   */
-  public static GpsRecord of(final Instant time, final Coordinates coordinates) {
-    return new GpsRecord(time, coordinates);
-  }
-
-  /**
-   * The point in time when the coordinates were measured.
-   *
-   * <p>The timestamp cannot be null and must be in the past (no kidding).
+   * <p>The time must be in the past (no kidding).
    *
    * @return the point in time when the coordinates were measured
    */
-  @Past(message = "{Model.GpsRecord.Time.Past}")
-  @NotNull(message = "{Model.GpsRecord.Time.NotNull}")
-  public Instant getTime() {
-    return time;
-  }
+  long getTime();
 
   /**
-   * /** The latitude of the point, in decimal degrees (WGS84 datum).
+   * Creates an immutable instance of GpsRecord.
    *
-   * <p>The latitude of the point, in decimal degrees. The value cannot be null and must be between
-   * or equal to -90.0 and 90.0 degrees.
-   *
-   * @return the latitude of the point
+   * @param longitude the longitude of the point, in decimal degrees (WGS84 datum).
+   * @param latitude the latitude of the point, in decimal degrees (WGS84 datum).
+   * @param elevation the elevation of the point, in meters.
+   * @param time the time when the coordinates were measured, as number of milliseconds from the
+   *     epoch of 1970-01-01T00:00:00Z
+   * @throws IllegalArgumentException in case longitude or latitude are not within the expected
+   *     range, or in case time is in the future.
+   * @return a new GpsRecord
    */
-  public Double getLatitude() {
-    return coordinates.getLatitude();
-  }
-
-  /**
-   * The longitude of the point, in decimal degrees (WGS84 datum).
-   *
-   * <p>The value cannot be null, must be superior or equal to -180.0 and inferior to 180.0 degrees.
-   *
-   * @return the longitude of the point
-   */
-  public Double getLongitude() {
-    return coordinates.getLongitude();
-  }
-
-  /**
-   * The elevation of the point, in meters.
-   *
-   * @return the elevation of the point, in meters
-   */
-  public Double getElevation() {
-    return coordinates.getElevation();
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(time, coordinates);
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (!(obj instanceof GpsRecord)) {
-      return false;
-    }
-    final GpsRecord other = (GpsRecord) obj;
-    final Coordinates c2 =
-        Coordinates.of(other.getLongitude(), other.getLatitude(), other.getElevation());
-    return Objects.equals(this.time, other.getTime()) && Objects.equals(this.coordinates, c2);
-  }
-
-  @Override
-  public String toString() {
-    return "GpsRecord{time="
-        + time
-        + ", longitude="
-        + coordinates.getLongitude()
-        + ", latitude="
-        + coordinates.getLatitude()
-        + ", elevation="
-        + coordinates.getElevation()
-        + '}';
-  }
-
-  @Override
-  public int compareTo(final GpsRecord o) {
-    return this.time.compareTo(o.getTime());
+  static GpsRecord of(
+      final double longitude, final double latitude, final double elevation, final long time) {
+    return new GpsRecordImpl(longitude, latitude, elevation, time);
   }
 }

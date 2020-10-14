@@ -1,35 +1,23 @@
 package io.pinesoft.trail.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
-import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import java.time.temporal.ChronoUnit;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-/** @author Xavier Sosnovsky */
-public class GpsRecordTest {
-
-  private static Validator validator;
-
-  @BeforeAll
-  public static void setUp() {
-    final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    validator = factory.getValidator();
-  }
+public class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   @Test
   public void createInstance() {
-    final Instant time = Instant.EPOCH;
+    final long time = Instant.EPOCH.toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
     final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
+    final GpsRecord instance = newGpsRecord(longitude, latitude, elevation, time);
     assertEquals(time, instance.getTime());
     assertEquals(longitude, instance.getLongitude(), 0.0);
     assertEquals(latitude, instance.getLatitude(), 0.0);
@@ -43,105 +31,85 @@ public class GpsRecordTest {
 
   @Test
   public void toStringOutput() {
-    final Instant time = Instant.EPOCH;
+    final long time = Instant.EPOCH.toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
     final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
+    final GpsRecord instance = newGpsRecord(longitude, latitude, elevation, time);
     assertEquals(
-        "GpsRecord{time="
-            + time
-            + ", longitude="
+        "GpsRecord{longitude="
             + longitude
             + ", "
             + "latitude="
             + latitude
             + ", elevation="
             + elevation
+            + ", time="
+            + time
             + '}',
         instance.toString());
   }
 
   @Test
-  public void valOK() {
-    final Instant time = Instant.EPOCH;
-    final double latitude = 47.5913904235;
-    final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(0, constraintViolations.size());
-  }
-
-  @Test
   public void valTimePast() {
-    final Instant time = Instant.MAX;
+    final long time = Instant.now().plus(10, ChronoUnit.DAYS).toEpochMilli();
     final double latitude = -89;
     final double longitude = 12.9946215637;
-    final double elevation = 630.28;
-    final GpsRecord instance = newGpsRecord(time, longitude, latitude, elevation);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals(
-              "The time the waypoint was recorded must be in the past. Got " + time + ".",
-              prob.getMessage());
-        });
-  }
-
-  @Test
-  public void valNullCoordinates() {
-    final Instant time = Instant.EPOCH;
-    final GpsRecord instance = GpsRecord.of(time, null);
-    Set<ConstraintViolation<GpsRecord>> constraintViolations = validator.validate(instance);
-    assertEquals(1, constraintViolations.size());
-    constraintViolations.forEach(
-        (prob) -> {
-          assertEquals("The coordinates of the GpsRecord must be supplied.", prob.getMessage());
-        });
+    final double elevation = 530.28;
+    final IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> newGpsRecord(longitude, latitude, elevation, time));
+    assertTrue(e.getMessage().contains("Time must"));
   }
 
   @Test
   public void compareBefore() {
-    final Instant t1 = Instant.EPOCH;
-    final Instant t2 = Instant.MIN;
+    final long t1 = Instant.now().toEpochMilli();
+    final long t2 = Instant.EPOCH.toEpochMilli();
     final double latitude = 90.0;
+    final double longitude = 42.0;
     final double elevation = 630.28;
-    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
-    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    final GpsRecord pt1 = newGpsRecord(longitude, latitude, elevation, t1);
+    final GpsRecord pt2 = newGpsRecord(longitude, latitude, elevation, t2);
     assertEquals(1, pt1.compareTo(pt2));
   }
 
   @Test
   public void compareAfter() {
-    final Instant t1 = Instant.EPOCH;
-    final Instant t2 = Instant.MAX;
+    final long t1 = Instant.EPOCH.toEpochMilli();
+    final long t2 = Instant.now().toEpochMilli();
     final double latitude = 90.0;
+    final double longitude = 42.0;
     final double elevation = 630.28;
-    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
-    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    final GpsRecord pt1 = newGpsRecord(longitude, latitude, elevation, t1);
+    final GpsRecord pt2 = newGpsRecord(longitude, latitude, elevation, t2);
     assertEquals(-1, pt1.compareTo(pt2));
   }
 
   @Test
   public void compareSame() {
-    final Instant t1 = Instant.EPOCH;
-    final Instant t2 = Instant.EPOCH;
+    final long t1 = Instant.EPOCH.toEpochMilli();
+    final long t2 = Instant.EPOCH.toEpochMilli();
     final double latitude = 90.0;
+    final double longitude = 42.0;
     final double elevation = 630.28;
-    final GpsRecord pt1 = newGpsRecord(t1, Double.NaN, latitude, elevation);
-    final GpsRecord pt2 = newGpsRecord(t2, Double.NaN, latitude, elevation);
+    final GpsRecord pt1 = newGpsRecord(longitude, latitude, elevation, t1);
+    final GpsRecord pt2 = newGpsRecord(longitude, latitude, elevation, t2);
     assertEquals(0, pt1.compareTo(pt2));
   }
 
-  private GpsRecord newGpsRecord(
-      final Instant time, final Double longitude, final Double latitude, final Double elevation) {
-    return GpsRecord.of(time, newCoordinates(longitude, latitude, elevation));
+  @Override
+  protected GpsRecord newInstance(double longitude, double latitude) {
+    return newInstance(longitude, latitude, 100);
   }
 
-  private Coordinates newCoordinates(
-      final Double longitude, final Double latitude, final Double elevation) {
-    return Coordinates.of(longitude, latitude, elevation);
+  @Override
+  protected GpsRecord newInstance(double longitude, double latitude, double elevation) {
+    return newGpsRecord(longitude, latitude, elevation, Instant.EPOCH.toEpochMilli());
+  }
+
+  private GpsRecord newGpsRecord(double longitude, double latitude, double elevation, long time) {
+    return GpsRecord.of(longitude, latitude, elevation, time);
   }
 }

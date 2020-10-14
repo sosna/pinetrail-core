@@ -25,6 +25,7 @@ public abstract class Point3DTest<T extends Point3D> extends Point2DTest<T> {
     EqualsVerifier.forClass(Point3DImpl.class)
         .withCachedHashCode("cachedCode", "calculateHash", new Point3DImpl(56.7, 43.2, 106.12))
         .withRedefinedSuperclass()
+        .withRedefinedSubclass(GpsRecordImpl.class)
         .verify();
   }
 
