@@ -3,6 +3,7 @@ plugins {
   id 'com.diffplug.spotless' version '5.6.1'
   id 'com.github.spotbugs' version '4.5.0'
   id 'de.aaschmid.cpd' version '3.1'
+  id 'info.solidsoft.pitest' version '1.5.2'
   id 'jacoco'
   id 'pmd'
 }
@@ -22,6 +23,13 @@ version = '1.0.0-SNAPSHOT'
 
 sourceCompatibility = '11'
 targetCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+  configure(options) {
+    options.compilerArgs << '-Xlint:all'
+    options.encoding = 'UTF-8'
+  }
+}
 
 test {
   useJUnitPlatform()
@@ -78,10 +86,32 @@ spotbugsMain {
   }
 }
 
+pmd {
+		ignoreFailures = true
+		sourceSets = [sourceSets.main]
+}
+
+cpdCheck {
+    reports {
+        text.enabled = true
+        xml.enabled = false
+    }
+    source = sourceSets.main.allJava
+}
+check.dependsOn(cpdCheck)
+
 spotless {
   java {
     googleJavaFormat()
   }
+}
+
+pitest {
+    targetClasses = ['io.pinesoft.trail.*']
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    junit5PluginVersion = '0.12'
 }
 
 jar {
