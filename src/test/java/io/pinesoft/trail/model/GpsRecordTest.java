@@ -31,7 +31,6 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
             "cachedCode",
             "calculateHash",
             new GpsRecordImpl(56.7, 43.2, 106.12, Instant.now().toEpochMilli()))
-        .withRedefinedSuperclass()
         .verify();
   }
 

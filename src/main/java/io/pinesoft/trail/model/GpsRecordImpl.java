@@ -3,18 +3,40 @@ package io.pinesoft.trail.model;
 import java.time.Instant;
 import java.util.ResourceBundle;
 
-final class GpsRecordImpl extends Point3DImpl implements GpsRecord {
+final class GpsRecordImpl implements GpsRecord {
 
+  private final double latitude;
+  private final double longitude;
+  private final double elevation;
   private final long time;
-  private final int cachedCode;
+  private final transient int cachedCode;
   private static final ResourceBundle msg = ResourceBundle.getBundle("messages");
 
   GpsRecordImpl(
       final double longitude, final double latitude, final double elevation, final long time) {
-    super(longitude, latitude, elevation);
+    checkLongitude(longitude);
+    checkLatitude(latitude);
     checkTime(time);
+    this.longitude = longitude;
+    this.latitude = latitude;
+    this.elevation = elevation;
     this.time = time;
     this.cachedCode = calculateHash();
+  }
+
+  @Override
+  public final double getLatitude() {
+    return latitude;
+  }
+
+  @Override
+  public final double getLongitude() {
+    return longitude;
+  }
+
+  @Override
+  public final double getElevation() {
+    return elevation;
   }
 
   @Override
@@ -29,9 +51,12 @@ final class GpsRecordImpl extends Point3DImpl implements GpsRecord {
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof GpsRecordImpl) {
-      final GpsRecordImpl that = (GpsRecordImpl) obj;
-      return that.canEqual(this) && this.getTime() == that.getTime() && super.equals(obj);
+    if (obj instanceof GpsRecord) {
+      final GpsRecord that = (GpsRecord) obj;
+      return Double.compare(this.latitude, that.getLatitude()) == 0
+          && Double.compare(this.longitude, that.getLongitude()) == 0
+          && Double.compare(this.elevation, that.getElevation()) == 0
+          && this.getTime() == that.getTime();
     } else {
       return false;
     }
@@ -51,11 +76,6 @@ final class GpsRecordImpl extends Point3DImpl implements GpsRecord {
   }
 
   @Override
-  boolean canEqual(final Object other) {
-    return (other instanceof GpsRecordImpl);
-  }
-
-  @Override
   public int compareTo(final GpsRecord o) {
     return Long.compare(this.time, o.getTime());
   }
@@ -66,6 +86,18 @@ final class GpsRecordImpl extends Point3DImpl implements GpsRecord {
     result = 31 * result + Double.hashCode(this.getElevation());
     result = 31 * result + Long.hashCode(time);
     return result;
+  }
+
+  private void checkLongitude(final double in) {
+    if (Double.isNaN(in) || in >= 180.0 || in < -180) {
+      throw new IllegalArgumentException(String.format(msg.getString("IllegalLongitude"), in));
+    }
+  }
+
+  private void checkLatitude(final double in) {
+    if (Double.isNaN(in) || in > 90.0 || in < -90.0) {
+      throw new IllegalArgumentException(String.format(msg.getString("IllegalLatitude"), in));
+    }
   }
 
   private void checkTime(final long in) {
