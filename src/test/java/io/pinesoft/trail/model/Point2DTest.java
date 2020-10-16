@@ -15,9 +15,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public abstract class Point2DTest<T extends Point2D> {
 
-  @Test
-  public void createInstance() {
-    final double latitude = 47.5913904235;
+  // Sanity checks
+  @ParameterizedTest
+  @MethodSource("createValidLatitude")
+  public void valLatitude(final double latitude) {
     final double longitude = 12.9946215637;
     final T instance = newInstance(longitude, latitude);
     assertEquals(longitude, instance.getLongitude(), 0.0);
@@ -25,25 +26,28 @@ public abstract class Point2DTest<T extends Point2D> {
   }
 
   @ParameterizedTest
-  @MethodSource("provideLatitude")
-  public void valLatitude(final Double latitude) {
-    final double longitude = 12.9946215637;
+  @MethodSource("createValidLongitude")
+  public void valLongitude(final double longitude) {
+    final double latitude = 12.9946215637;
     final T instance = newInstance(longitude, latitude);
     assertEquals(longitude, instance.getLongitude(), 0.0);
     assertEquals(latitude, instance.getLatitude(), 0.0);
   }
 
-  @Test
-  public final void valLatitudeMin() {
+  // Invalid latitude. Must be between [-90.0, 90.0]!
+  @ParameterizedTest
+  @MethodSource("createInvalidLatitudeMin")
+  public final void valLatitudeMin(final double latitude) {
     final IllegalArgumentException e =
-        assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, -90.1));
+        assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, latitude));
     assertTrue(e.getMessage().contains("Latitude must"));
   }
 
-  @Test
-  public final void valLatitudeMax() {
+  @ParameterizedTest
+  @MethodSource("createInvalidLatitudeMax")
+  public final void valLatitudeMax(final double latitude) {
     final IllegalArgumentException e =
-        assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, 90.1));
+        assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, latitude));
     assertTrue(e.getMessage().contains("Latitude must"));
   }
 
@@ -54,17 +58,20 @@ public abstract class Point2DTest<T extends Point2D> {
     assertTrue(e.getMessage().contains("Latitude must"));
   }
 
-  @Test
-  public final void valLongitudeMin() {
+  // Invalid longitude. Must be between [-180.0, 180.0[!
+  @ParameterizedTest
+  @MethodSource("createInvalidLongitudeMin")
+  public final void valLongitudeMin(final double longitude) {
     final IllegalArgumentException e =
-        assertThrows(IllegalArgumentException.class, () -> newInstance(-180.1, 45.0));
+        assertThrows(IllegalArgumentException.class, () -> newInstance(longitude, 45.0));
     assertTrue(e.getMessage().contains("Longitude must"));
   }
 
-  @Test
-  public final void valLongitudeMax() {
+  @ParameterizedTest
+  @MethodSource("createInvalidLongitudeMax")
+  public final void valLongitudeMax(final double longitude) {
     final IllegalArgumentException e =
-        assertThrows(IllegalArgumentException.class, () -> newInstance(180.0, 45.0));
+        assertThrows(IllegalArgumentException.class, () -> newInstance(longitude, 45.0));
     assertTrue(e.getMessage().contains("Longitude must"));
   }
 
@@ -77,13 +84,49 @@ public abstract class Point2DTest<T extends Point2D> {
 
   protected abstract T newInstance(final double longitude, final double latitude);
 
-  private static Stream<Double> provideLatitude() {
+  private static Stream<Double> createValidLatitude() {
+    return createStream(-90, 90, 2);
+  }
+
+  private static Stream<Double> createValidLongitude() {
+    return createStream(-180, 179.99999, 2);
+  }
+
+  private static Stream<Double> createInvalidLatitudeMin() {
+    return createStream(-1000.0, -90.00001, 0);
+  }
+
+  private static Stream<Double> createInvalidLatitudeMax() {
+    return createStream(90.00001, 1000.0, 1);
+  }
+
+  private static Stream<Double> createInvalidLongitudeMin() {
+    return createStream(-1000.0, -180.00001, 0);
+  }
+
+  private static Stream<Double> createInvalidLongitudeMax() {
+    return createStream(180.0, 1000.0, 1);
+  }
+
+  private static Stream<Double> createStream(final double min, final double max, final int type) {
     final List<Double> out =
         IntStream.range(0, 10)
-            .mapToObj(num -> ThreadLocalRandom.current().nextDouble(-90.0, 90.0))
+            .mapToObj(num -> ThreadLocalRandom.current().nextDouble(min, max))
             .collect(Collectors.toList());
-    out.add(-90.0);
-    out.add(90.0);
+    switch (type) {
+      case 0:
+        out.add(max);
+        break;
+      case 1:
+        out.add(min);
+        break;
+      case 2:
+        out.add(min);
+        out.add(max);
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid type");
+    }
     return out.stream();
   }
 }

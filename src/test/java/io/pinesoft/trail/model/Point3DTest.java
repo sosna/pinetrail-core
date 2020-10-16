@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 public abstract class Point3DTest<T extends Point3D> extends Point2DTest<T> {
 
-  @Override
   @Test
   public void createInstance() {
     final double latitude = 48.5913904235;
