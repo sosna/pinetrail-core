@@ -89,13 +89,15 @@ final class GpsRecordImpl implements GpsRecord {
   }
 
   private void checkLongitude(final double in) {
-    if (Double.isNaN(in) || in >= 180.0 || in < -180) {
+    if (Double.isNaN(in)
+        || Double.compare(in, 180) != -1
+        || Double.compare(in, -180) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLongitude"), in));
     }
   }
 
   private void checkLatitude(final double in) {
-    if (Double.isNaN(in) || in > 90.0 || in < -90.0) {
+    if (Double.isNaN(in) || Double.compare(in, 90) == 1 || Double.compare(in, -90) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLatitude"), in));
     }
   }
