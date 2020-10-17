@@ -34,6 +34,21 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
         .verify();
   }
 
+  // Check against conventions of Effective Java
+  @Test
+  public void hashCodeConventions() {
+    final long time = Instant.now().toEpochMilli();
+    final double latitude = 47.5913904235;
+    final double longitude = 12.9946215637;
+    final double elevation = 630.28;
+    final GpsRecord instance = newGpsRecord(longitude, latitude, elevation, time);
+    int expected = Double.hashCode(instance.getLongitude());
+    expected = 31 * expected + Double.hashCode(instance.getLatitude());
+    expected = 31 * expected + Double.hashCode(instance.getElevation());
+    expected = 31 * expected + Long.hashCode(instance.getTime());
+    assertEquals(expected, instance.hashCode());
+  }
+
   @Test
   public void toStringOutput() {
     final long time = Instant.EPOCH.toEpochMilli();
