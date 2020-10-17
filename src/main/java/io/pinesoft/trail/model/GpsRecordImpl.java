@@ -53,10 +53,10 @@ final class GpsRecordImpl implements GpsRecord {
   public boolean equals(final Object obj) {
     if (obj instanceof GpsRecord) {
       final GpsRecord that = (GpsRecord) obj;
-      return Double.compare(this.latitude, that.getLatitude()) == 0
-          && Double.compare(this.longitude, that.getLongitude()) == 0
-          && Double.compare(this.elevation, that.getElevation()) == 0
-          && this.getTime() == that.getTime();
+      return Double.compare(latitude, that.getLatitude()) == 0
+          && Double.compare(longitude, that.getLongitude()) == 0
+          && Double.compare(elevation, that.getElevation()) == 0
+          && time == that.getTime();
     } else {
       return false;
     }
@@ -65,33 +65,31 @@ final class GpsRecordImpl implements GpsRecord {
   @Override
   public String toString() {
     return "GpsRecord{longitude="
-        + getLongitude()
+        + longitude
         + ", latitude="
-        + getLatitude()
+        + latitude
         + ", elevation="
-        + getElevation()
+        + elevation
         + ", time="
-        + getTime()
+        + time
         + '}';
   }
 
   @Override
   public int compareTo(final GpsRecord o) {
-    return Long.compare(this.time, o.getTime());
+    return Long.compare(time, o.getTime());
   }
 
   private int calculateHash() {
-    int result = Double.hashCode(this.getLongitude());
-    result = 31 * result + Double.hashCode(this.getLatitude());
-    result = 31 * result + Double.hashCode(this.getElevation());
+    int result = Double.hashCode(longitude);
+    result = 31 * result + Double.hashCode(latitude);
+    result = 31 * result + Double.hashCode(elevation);
     result = 31 * result + Long.hashCode(time);
     return result;
   }
 
   private void checkLongitude(final double in) {
-    if (Double.isNaN(in)
-        || Double.compare(in, 180) != -1
-        || Double.compare(in, -180) == -1) {
+    if (Double.isNaN(in) || Double.compare(in, 180) != -1 || Double.compare(in, -180) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLongitude"), in));
     }
   }
