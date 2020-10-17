@@ -9,10 +9,10 @@ import java.time.temporal.ChronoUnit;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-public class GpsRecordTest extends Point3DTest<GpsRecord> {
+class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   @Test
-  public void createInstance() {
+  void createInstance() {
     final long time = Instant.EPOCH.toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
@@ -25,7 +25,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void equalsContract() {
+  void equalsContract() {
     EqualsVerifier.forClass(GpsRecordImpl.class)
         .withCachedHashCode(
             "cachedCode",
@@ -36,7 +36,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   // Check against conventions of Effective Java
   @Test
-  public void hashCodeConventions() {
+  void hashCodeConventions() {
     final long time = Instant.now().toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
@@ -50,7 +50,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void toStringOutput() {
+  void toStringOutput() {
     final long time = Instant.EPOCH.toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
@@ -71,7 +71,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void valTimePast() {
+  void valTimePast() {
     final long time = Instant.now().plus(10, ChronoUnit.DAYS).toEpochMilli();
     final double latitude = -89;
     final double longitude = 12.9946215637;
@@ -84,7 +84,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void compareBefore() {
+  void compareBefore() {
     final long t1 = Instant.now().toEpochMilli();
     final long t2 = Instant.EPOCH.toEpochMilli();
     final double latitude = 90.0;
@@ -96,7 +96,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void compareAfter() {
+  void compareAfter() {
     final long t1 = Instant.EPOCH.toEpochMilli();
     final long t2 = Instant.now().toEpochMilli();
     final double latitude = 90.0;
@@ -108,7 +108,7 @@ public class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @Test
-  public void compareSame() {
+  void compareSame() {
     final long t1 = Instant.EPOCH.toEpochMilli();
     final long t2 = Instant.EPOCH.toEpochMilli();
     final double latitude = 90.0;

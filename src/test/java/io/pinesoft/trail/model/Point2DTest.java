@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public abstract class Point2DTest<T extends Point2D> {
+abstract class Point2DTest<T extends Point2D> {
 
   // Sanity checks
   @ParameterizedTest
   @MethodSource("createValidLatitude")
-  public void valLatitude(final double latitude) {
+  void valLatitude(final double latitude) {
     final double longitude = 12.9946215637;
     final T instance = newInstance(longitude, latitude);
     assertEquals(longitude, instance.getLongitude(), 0.0);
@@ -27,7 +27,7 @@ public abstract class Point2DTest<T extends Point2D> {
 
   @ParameterizedTest
   @MethodSource("createValidLongitude")
-  public void valLongitude(final double longitude) {
+  void valLongitude(final double longitude) {
     final double latitude = 12.9946215637;
     final T instance = newInstance(longitude, latitude);
     assertEquals(longitude, instance.getLongitude(), 0.0);
@@ -37,7 +37,7 @@ public abstract class Point2DTest<T extends Point2D> {
   // Invalid latitude. Must be between [-90.0, 90.0]!
   @ParameterizedTest
   @MethodSource("createInvalidLatitudeMin")
-  public final void valLatitudeMin(final double latitude) {
+  final void valLatitudeMin(final double latitude) {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, latitude));
     assertTrue(e.getMessage().contains("Latitude must"));
@@ -45,14 +45,14 @@ public abstract class Point2DTest<T extends Point2D> {
 
   @ParameterizedTest
   @MethodSource("createInvalidLatitudeMax")
-  public final void valLatitudeMax(final double latitude) {
+  final void valLatitudeMax(final double latitude) {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, latitude));
     assertTrue(e.getMessage().contains("Latitude must"));
   }
 
   @Test
-  public final void valLatitudeNaN() {
+  final void valLatitudeNaN() {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(45.0, Double.NaN));
     assertTrue(e.getMessage().contains("Latitude must"));
@@ -61,7 +61,7 @@ public abstract class Point2DTest<T extends Point2D> {
   // Invalid longitude. Must be between [-180.0, 180.0[!
   @ParameterizedTest
   @MethodSource("createInvalidLongitudeMin")
-  public final void valLongitudeMin(final double longitude) {
+  final void valLongitudeMin(final double longitude) {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(longitude, 45.0));
     assertTrue(e.getMessage().contains("Longitude must"));
@@ -69,14 +69,14 @@ public abstract class Point2DTest<T extends Point2D> {
 
   @ParameterizedTest
   @MethodSource("createInvalidLongitudeMax")
-  public final void valLongitudeMax(final double longitude) {
+  final void valLongitudeMax(final double longitude) {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(longitude, 45.0));
     assertTrue(e.getMessage().contains("Longitude must"));
   }
 
   @Test
-  public final void valLongitudeNaN() {
+  final void valLongitudeNaN() {
     final IllegalArgumentException e =
         assertThrows(IllegalArgumentException.class, () -> newInstance(Double.NaN, 45.0));
     assertTrue(e.getMessage().contains("Longitude must"));

@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public abstract class Point3DTest<T extends Point3D> extends Point2DTest<T> {
+abstract class Point3DTest<T extends Point3D> extends Point2DTest<T> {
 
   @Test
-  public void createInstance() {
+  void createInstance() {
     final double latitude = 48.5913904235;
     final double longitude = 22.9946215637;
     final double elevation = 530.28;

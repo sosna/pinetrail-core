@@ -25,17 +25,17 @@ final class GpsRecordImpl implements GpsRecord {
   }
 
   @Override
-  public final double getLatitude() {
+  public double getLatitude() {
     return latitude;
   }
 
   @Override
-  public final double getLongitude() {
+  public double getLongitude() {
     return longitude;
   }
 
   @Override
-  public final double getElevation() {
+  public double getElevation() {
     return elevation;
   }
 
@@ -51,8 +51,8 @@ final class GpsRecordImpl implements GpsRecord {
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof GpsRecord) {
-      final GpsRecord that = (GpsRecord) obj;
+    if (obj instanceof GpsRecordImpl) {
+      final GpsRecordImpl that = (GpsRecordImpl) obj;
       return Double.compare(latitude, that.getLatitude()) == 0
           && Double.compare(longitude, that.getLongitude()) == 0
           && Double.compare(elevation, that.getElevation()) == 0
@@ -88,19 +88,19 @@ final class GpsRecordImpl implements GpsRecord {
     return result;
   }
 
-  private void checkLongitude(final double in) {
+  private static void checkLongitude(final double in) {
     if (Double.isNaN(in) || Double.compare(in, 180) != -1 || Double.compare(in, -180) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLongitude"), in));
     }
   }
 
-  private void checkLatitude(final double in) {
+  private static void checkLatitude(final double in) {
     if (Double.isNaN(in) || Double.compare(in, 90) == 1 || Double.compare(in, -90) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLatitude"), in));
     }
   }
 
-  private void checkTime(final long in) {
+  private static void checkTime(final long in) {
     if (Instant.now().toEpochMilli() < in) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalTime"), in));
     }
