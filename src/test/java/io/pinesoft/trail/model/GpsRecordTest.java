@@ -5,9 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class GpsRecordTest extends Point3DTest<GpsRecord> {
 
@@ -36,7 +44,7 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   // Check against conventions of Effective Java
   @Test
-  void hashCodeConventions() {
+  void followsHashCodeConventions() {
     final long time = Instant.now().toEpochMilli();
     final double latitude = 47.5913904235;
     final double longitude = 12.9946215637;
@@ -70,9 +78,9 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
         instance.toString());
   }
 
-  @Test
-  void valTimePast() {
-    final long time = Instant.now().plus(10, ChronoUnit.DAYS).toEpochMilli();
+  @ParameterizedTest
+  @MethodSource("createInvalidTime")
+  void valTimePast(final long time) {
     final double latitude = -89;
     final double longitude = 12.9946215637;
     final double elevation = 530.28;
@@ -131,5 +139,16 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
 
   private GpsRecord newGpsRecord(double longitude, double latitude, double elevation, long time) {
     return GpsRecord.of(longitude, latitude, elevation, time);
+  }
+
+  private static Stream<Long> createInvalidTime() {
+    final long min = Instant.now().plus(1, ChronoUnit.MINUTES).toEpochMilli();
+    final long max =
+        LocalDate.now()
+            .plus(Period.ofYears(100))
+            .atStartOfDay()
+            .toInstant(ZoneOffset.UTC)
+            .toEpochMilli();
+    return IntStream.range(0, 10).mapToObj(num -> ThreadLocalRandom.current().nextLong(min, max));
   }
 }
