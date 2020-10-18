@@ -3,6 +3,7 @@ package io.pinesoft.trail.model;
 import java.time.Instant;
 import java.util.ResourceBundle;
 
+/** Note: This class has a natural ordering that is inconsistent with equals. */
 final class GpsRecordImpl implements GpsRecord {
 
   private final double latitude;
