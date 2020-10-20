@@ -79,15 +79,29 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
   }
 
   @ParameterizedTest
-  @MethodSource("createInvalidTime")
-  void valTimePast(final long time) {
+  @MethodSource("createValidTime")
+  void validTime(final long time) {
+    final double latitude = -89;
+    final double longitude = 12.9946215637;
+    final double elevation = 530.28;
+    final GpsRecord rec = newGpsRecord(longitude, latitude, elevation, time);
+    assertEquals(time, rec.getTime());
+  }
+
+  @Test
+  void invalidTime() {
     final double latitude = -89;
     final double longitude = 12.9946215637;
     final double elevation = 530.28;
     final IllegalArgumentException e =
         assertThrows(
             IllegalArgumentException.class,
-            () -> newGpsRecord(longitude, latitude, elevation, time));
+            () ->
+                newGpsRecord(
+                    longitude,
+                    latitude,
+                    elevation,
+                    Instant.now().plus(2, ChronoUnit.SECONDS).toEpochMilli()));
     assertTrue(e.getMessage().contains("Time must"));
   }
 
@@ -141,14 +155,14 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
     return GpsRecord.of(longitude, latitude, elevation, time);
   }
 
-  private static Stream<Long> createInvalidTime() {
-    final long min = Instant.now().plus(1, ChronoUnit.MINUTES).toEpochMilli();
-    final long max =
+  private static Stream<Long> createValidTime() {
+    final long now = Instant.now().toEpochMilli();
+    final long min =
         LocalDate.now()
-            .plus(Period.ofYears(100))
+            .minus(Period.ofYears(100))
             .atStartOfDay()
             .toInstant(ZoneOffset.UTC)
             .toEpochMilli();
-    return IntStream.range(0, 10).mapToObj(num -> ThreadLocalRandom.current().nextLong(min, max));
+    return IntStream.range(0, 10).mapToObj(num -> ThreadLocalRandom.current().nextLong(min, now));
   }
 }
