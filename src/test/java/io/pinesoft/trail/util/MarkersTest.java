@@ -1,6 +1,7 @@
-package io.pinesoft.trail.utils.log;
+package io.pinesoft.trail.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Marker;
@@ -10,9 +11,9 @@ public class MarkersTest {
 
   @Test
   public void getMarker() {
-    final Markers audit = Markers.valueOf("DB");
+    final Markers audit = Markers.valueOf("IO");
     final Marker marker = audit.getMarker();
-    assertEquals("db", marker.getName());
+    assertEquals("io", marker.getName());
   }
 
   @Test

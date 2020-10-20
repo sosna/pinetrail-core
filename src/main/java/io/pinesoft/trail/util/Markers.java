@@ -1,4 +1,4 @@
-package io.pinesoft.trail.utils.log;
+package io.pinesoft.trail.util;
 
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -26,16 +26,14 @@ public enum Markers {
    * system starts up, etc.
    */
   CONFIG(MarkerFactory.getMarker("conf")),
-  /** Marker for log entries related to interactions with the persistent storage. */
-  DB(MarkerFactory.getMarker("db")),
   /**
    * Marker for log entries related to input/output activities such as writing and reading files.
    */
-  IO(MarkerFactory.getMarker("ws.sosna.pinetrail.api.io")),
+  IO(MarkerFactory.getMarker("io")),
   /**
    * Marker for log entries related to the management of model objects, such as bean instantiation.
    */
-  MODEL(MarkerFactory.getMarker("ws/sosna/pinetrail/model")),
+  MODEL(MarkerFactory.getMarker("model")),
   /**
    * Marker for log entries related to network activities such as retrieving information from 3rd
    * party web services, etc.
@@ -45,7 +43,9 @@ public enum Markers {
    * Marker for log entries related to performance issues such as the time it took to retrieve data
    * from the database.
    */
-  PERFORMANCE(MarkerFactory.getMarker("perf"));
+  PERFORMANCE(MarkerFactory.getMarker("perf")),
+  /** Marker for log entries related to data processing. */
+  PROCESS(MarkerFactory.getMarker("proc"));
 
   private final Marker marker;
 

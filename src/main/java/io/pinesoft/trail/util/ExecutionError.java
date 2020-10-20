@@ -1,7 +1,5 @@
-package io.pinesoft.trail.utils.error;
+package io.pinesoft.trail.util;
 
-import io.pinesoft.trail.utils.log.Actions;
-import io.pinesoft.trail.utils.log.StatusCodes;
 import org.slf4j.Marker;
 
 /**
@@ -14,9 +12,8 @@ import org.slf4j.Marker;
  */
 public final class ExecutionError extends RuntimeException {
 
-  private static final long serialVersionUID = -2958938847028125286L;
+  private static final long serialVersionUID = 6191256467469854130L;
   private final Marker marker;
-  private final Actions action;
   private final StatusCodes errorCode;
 
   /**
@@ -25,18 +22,15 @@ public final class ExecutionError extends RuntimeException {
    * @param message the error message
    * @param cause the error cause
    * @param marker the module where the error happened
-   * @param action the action performed when the error happened
    * @param errorCode the errorCode
    */
   public ExecutionError(
       final String message,
       final Throwable cause,
       final Marker marker,
-      final Actions action,
       final StatusCodes errorCode) {
     super(message, cause);
     this.marker = marker;
-    this.action = action;
     this.errorCode = errorCode;
   }
 
@@ -47,15 +41,6 @@ public final class ExecutionError extends RuntimeException {
    */
   public Marker getMarker() {
     return marker;
-  }
-
-  /**
-   * Returns the action performed when the error occurred.
-   *
-   * @return the action performed when the error occurred
-   */
-  public Actions getAction() {
-    return action;
   }
 
   /**
