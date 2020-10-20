@@ -93,15 +93,11 @@ class GpsRecordTest extends Point3DTest<GpsRecord> {
     final double latitude = -89;
     final double longitude = 12.9946215637;
     final double elevation = 530.28;
+    final long time = Instant.now().plus(2, ChronoUnit.SECONDS).toEpochMilli();
     final IllegalArgumentException e =
         assertThrows(
             IllegalArgumentException.class,
-            () ->
-                newGpsRecord(
-                    longitude,
-                    latitude,
-                    elevation,
-                    Instant.now().plus(2, ChronoUnit.SECONDS).toEpochMilli()));
+            () -> newGpsRecord(longitude, latitude, elevation, time));
     assertTrue(e.getMessage().contains("Time must"));
   }
 

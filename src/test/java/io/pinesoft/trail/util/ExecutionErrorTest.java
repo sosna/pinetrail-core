@@ -5,11 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Marker;
 
-/** @author Xavier Sosnovsky */
-public class ExecutionErrorTest {
+class ExecutionErrorTest {
 
   @Test
-  public void getLoggingInfo() {
+  void getLoggingInfo() {
     final String message = "Sorry, my mistake.";
     final Marker marker = Markers.CONFIG.getMarker();
     final StatusCodes errorCode = StatusCodes.INTERNAL_ERROR;
