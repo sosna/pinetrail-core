@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
  *
  * @author Xavier Sosnovsky
  * @see GpsRecord
- * @see io.pinesoft.trail.utils.error.ExecutionError
+ * @see io.pinesoft.trail.util.ExecutionError
  */
 public interface Writer extends BiConsumer<Set<GpsRecord>, Path> {
 
@@ -25,8 +25,8 @@ public interface Writer extends BiConsumer<Set<GpsRecord>, Path> {
    *
    * @param trail the collection of GpsRecord to be written
    * @param location the location where the file will be written
-   * @throws io.pinesoft.trail.utils.error.ExecutionError issue preventing the writing process to
-   *     finish successfully.
+   * @throws io.pinesoft.trail.util.ExecutionError issue preventing the writing process to finish
+   *     successfully.
    */
   @Override
   void accept(final Set<GpsRecord> trail, final Path location);

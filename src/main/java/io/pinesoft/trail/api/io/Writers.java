@@ -1,8 +1,7 @@
 package io.pinesoft.trail.api.io;
 
-import io.pinesoft.trail.utils.log.Actions;
-import io.pinesoft.trail.utils.log.Markers;
-import io.pinesoft.trail.utils.log.StatusCodes;
+import io.pinesoft.trail.util.Markers;
+import io.pinesoft.trail.util.StatusCodes;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -29,8 +28,7 @@ public enum Writers {
   Writers() {
     LOGGER.info(
         Markers.CONFIG.getMarker(),
-        "{} | {} | Created a registry for accessing writers services.",
-        Actions.CREATE,
+        "{} | Created a registry for accessing writers services.",
         StatusCodes.OK.getCode());
     this.providers = new EnumMap<>(Formats.class);
     loader = ServiceLoader.load(WriterProvider.class);
@@ -57,16 +55,14 @@ public enum Writers {
     if (null == provider) {
       LOGGER.warn(
           Markers.IO.getMarker(),
-          "{} | {} | Could not find a writer for {}.",
-          Actions.GET,
+          "{} | Could not find a writer for {}.",
           StatusCodes.NOT_FOUND.getCode(),
           format);
       throw new UnsupportedOperationException("Could not find a writer for " + format);
     } else {
       LOGGER.debug(
           Markers.IO.getMarker(),
-          "{} | {} | Returning a writer for {}.",
-          Actions.GET,
+          "{} | Returning a writer for {}.",
           StatusCodes.OK.getCode(),
           format);
       return provider.newWriter(format);
@@ -77,8 +73,7 @@ public enum Writers {
     providers.putIfAbsent(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
-        "{} | {} | Registered a provider of writers for {} ({}).",
-        Actions.REGISTER,
+        "{} | Registered a provider of writers for {} ({}).",
         StatusCodes.OK.getCode(),
         format,
         provider.getClass().getCanonicalName());

@@ -16,7 +16,7 @@ import java.util.function.Function;
  *
  * @author Xavier Sosnovsky
  * @see GpsRecord
- * @see io.pinesoft.trail.utils.error.ExecutionError
+ * @see io.pinesoft.trail.util.ExecutionError
  */
 public interface Reader extends Function<Path, Set<GpsRecord>> {
 
@@ -25,7 +25,7 @@ public interface Reader extends Function<Path, Set<GpsRecord>> {
    *
    * @param fileLocation the location of the file from which the trail information will be
    *     extracted.
-   * @throws io.pinesoft.trail.utils.error.ExecutionError issue preventing the extraction process to
+   * @throws io.pinesoft.trail.util.ExecutionError issue preventing the extraction process to
    *     finish successfully.
    */
   @Override

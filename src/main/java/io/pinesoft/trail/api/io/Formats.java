@@ -1,11 +1,9 @@
 package io.pinesoft.trail.api.io;
 
-import io.pinesoft.trail.utils.error.ExecutionError;
-import io.pinesoft.trail.utils.log.Actions;
-import io.pinesoft.trail.utils.log.Markers;
-import io.pinesoft.trail.utils.log.StatusCodes;
+import io.pinesoft.trail.util.ExecutionError;
+import io.pinesoft.trail.util.Markers;
+import io.pinesoft.trail.util.StatusCodes;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -45,7 +43,7 @@ public enum Formats {
    */
   public static Formats of(final Path fileLocation) {
     try {
-      final String content = new String(Files.readAllBytes(fileLocation), StandardCharsets.UTF_8);
+      final String content = Files.readString(fileLocation);
       if (content.contains("http://www.topografix.com/GPX/1/1")) {
         return GPX_1_1;
       } else if (content.contains("http://www.topografix.com/GPX/1/0")) {
@@ -58,15 +56,13 @@ public enum Formats {
                 + "one of the supported formats.",
             null,
             Markers.IO.getMarker(),
-            Actions.OPEN,
-            StatusCodes.NOT_ACCEPTABLE);
+            StatusCodes.UNSUPPORTED_FORMAT);
       }
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       throw new ExecutionError(
           "Could not find file " + fileLocation.toAbsolutePath().normalize(),
           null,
           Markers.IO.getMarker(),
-          Actions.OPEN,
           StatusCodes.NOT_FOUND);
     }
   }

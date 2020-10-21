@@ -1,8 +1,7 @@
 package io.pinesoft.trail.api.io;
 
-import io.pinesoft.trail.utils.log.Actions;
-import io.pinesoft.trail.utils.log.Markers;
-import io.pinesoft.trail.utils.log.StatusCodes;
+import io.pinesoft.trail.util.Markers;
+import io.pinesoft.trail.util.StatusCodes;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -29,8 +28,7 @@ public enum Readers {
   Readers() {
     LOGGER.info(
         Markers.CONFIG.getMarker(),
-        "{} | {} | Created a registry of readers services.",
-        Actions.CREATE,
+        "{} | Created a registry of readers services.",
         StatusCodes.OK.getCode());
     this.providers = new EnumMap<>(Formats.class);
     loader = ServiceLoader.load(ReaderProvider.class);
@@ -57,16 +55,14 @@ public enum Readers {
     if (null == provider) {
       LOGGER.warn(
           Markers.IO.getMarker(),
-          "{} | {} | Could not find a reader for {}.",
-          Actions.GET,
+          "{} | Could not find a reader for {}.",
           StatusCodes.NOT_FOUND.getCode(),
           format);
       throw new UnsupportedOperationException("Could not find a reader for " + format);
     } else {
       LOGGER.debug(
           Markers.IO.getMarker(),
-          "{} | {} | Returning a reader for {}.",
-          Actions.GET,
+          "{} | Returning a reader for {}.",
           StatusCodes.OK.getCode(),
           format);
       return provider.newReader(format);
@@ -77,8 +73,7 @@ public enum Readers {
     providers.putIfAbsent(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
-        "{} | {} | Registered a provider of readers for {} ({}).",
-        Actions.REGISTER,
+        "{} | Registered a provider of readers for {} ({}).",
         StatusCodes.OK.getCode(),
         format,
         provider.getClass().getCanonicalName());

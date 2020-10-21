@@ -2,8 +2,8 @@ package io.pinesoft.trail.api.io;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.pinesoft.trail.utils.error.ExecutionError;
-import io.pinesoft.trail.utils.log.StatusCodes;
+import io.pinesoft.trail.util.ExecutionError;
+import io.pinesoft.trail.util.StatusCodes;
 import java.nio.file.FileSystems;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,7 @@ public class FormatsTest {
       Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/logback-test.xml"));
       fail("Expected 406");
     } catch (final ExecutionError e) {
-      if (StatusCodes.NOT_ACCEPTABLE != e.getErrorCode()) {
+      if (StatusCodes.UNSUPPORTED_FORMAT != e.getErrorCode()) {
         fail("Expected 406 but got " + e.getErrorCode());
       }
     }
