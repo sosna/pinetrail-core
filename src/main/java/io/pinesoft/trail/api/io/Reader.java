@@ -25,8 +25,8 @@ public interface Reader extends Function<Path, Set<GpsRecord>> {
    *
    * @param fileLocation the location of the file from which the trail information will be
    *     extracted.
-   * @throws io.pinesoft.trail.util.ExecutionError issue preventing the extraction process to
-   *     finish successfully.
+   * @throws io.pinesoft.trail.util.ExecutionError issue preventing the extraction process to finish
+   *     successfully.
    */
   @Override
   Set<GpsRecord> apply(final Path fileLocation);
