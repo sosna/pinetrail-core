@@ -4,7 +4,6 @@ import io.pinesoft.trail.model.GpsRecord;
 import java.nio.file.Path;
 import java.util.Set;
 
-/** @author Xavier Sosnovsky */
 public class TestWriterProvider implements WriterProvider {
 
   public TestWriterProvider() {

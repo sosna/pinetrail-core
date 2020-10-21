@@ -1,20 +1,20 @@
 package io.pinesoft.trail.api.io;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-/** @author Xavier Sosnovsky */
-public class WritersTest {
+class WritersTest {
 
   @Test
-  public void registerProviderAndGetWriter() {
+  void registerProviderAndGetWriter() {
     final Writer writer = Writers.INSTANCE.newWriter(Formats.GPX_1_1);
     assertNotNull(writer);
   }
 
   @Test()
-  public void unsupportedFormat() {
+  void unsupportedFormat() {
     assertThrows(
         UnsupportedOperationException.class,
         () -> {

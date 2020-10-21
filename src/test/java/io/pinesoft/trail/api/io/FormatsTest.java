@@ -7,25 +7,24 @@ import io.pinesoft.trail.util.StatusCodes;
 import java.nio.file.FileSystems;
 import org.junit.jupiter.api.Test;
 
-/** @author Xavier Sosnovsky */
-public class FormatsTest {
+class FormatsTest {
 
   @Test
-  public void getGpx1_0() {
+  void getGpx1_0() {
     assertEquals(
         Formats.GPX_1_0,
         Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/gpx1_0.gpx")));
   }
 
   @Test
-  public void getGpx1_1() {
+  void getGpx1_1() {
     assertEquals(
         Formats.GPX_1_1,
         Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/gpx1_1.gpx")));
   }
 
   @Test
-  public void throwNotAcceptable() {
+  void throwNotAcceptable() {
     try {
       Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/logback-test.xml"));
       fail("Expected 406");
@@ -37,7 +36,7 @@ public class FormatsTest {
   }
 
   @Test
-  public void throwNotFound() {
+  void throwNotFound() {
     try {
       Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/nothere.why"));
       fail("Expected 404");

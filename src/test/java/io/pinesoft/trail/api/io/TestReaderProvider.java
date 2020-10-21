@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
-/** @author Xavier Sosnovsky */
 public class TestReaderProvider implements ReaderProvider {
 
   public TestReaderProvider() {

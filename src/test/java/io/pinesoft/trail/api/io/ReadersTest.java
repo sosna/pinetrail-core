@@ -1,20 +1,20 @@
 package io.pinesoft.trail.api.io;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-/** @author Xavier Sosnovsky */
-public class ReadersTest {
+class ReadersTest {
 
   @Test
-  public void registerProviderAndGetReader() {
+  void registerProviderAndGetReader() {
     final Reader reader = Readers.INSTANCE.newReader(Formats.GPX_1_1);
     assertNotNull(reader);
   }
 
   @Test()
-  public void unsupportedFormat() {
+  void unsupportedFormat() {
     assertThrows(
         UnsupportedOperationException.class,
         () -> {
