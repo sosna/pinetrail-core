@@ -1,5 +1,6 @@
 package io.pinesoft.trail.api.io;
 
+import io.pinesoft.trail.util.ExecutionError;
 import io.pinesoft.trail.util.Markers;
 import io.pinesoft.trail.util.StatusCodes;
 import java.util.EnumMap;
@@ -21,16 +22,12 @@ public enum Writers {
   /** Singleton instance of Pinetrail writers. */
   INSTANCE;
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(Writers.class);
   private final Map<Formats, WriterProvider> providers;
-  private final Logger LOGGER = LoggerFactory.getLogger(Writers.class);
   private final ServiceLoader<WriterProvider> loader;
 
   Writers() {
-    LOGGER.info(
-        Markers.CONFIG.getMarker(),
-        "{} | Created a registry for accessing writers services.",
-        StatusCodes.OK.getCode());
-    this.providers = new EnumMap<>(Formats.class);
+    providers = new EnumMap<>(Formats.class);
     loader = ServiceLoader.load(WriterProvider.class);
   }
 
@@ -39,38 +36,43 @@ public enum Writers {
    *
    * @param format the output format
    * @return a writer that will perform the supplied work
-   * @throws UnsupportedOperationException if there is no provider of writers for the supplied
-   *     format.
+   * @throws io.pinesoft.trail.util.ExecutionError if there is no provider of writers for the
+   *     supplied format.
    */
   public Writer newWriter(final Formats format) {
     if (!(providers.containsKey(format))) {
       for (final WriterProvider tmpProvider : loader) {
-        if (null != tmpProvider.newWriter(format)) {
+        if (tmpProvider.newWriter(format).isPresent()) {
           registerProvider(format, tmpProvider);
           break;
         }
       }
     }
-    final WriterProvider provider = providers.get(format);
-    if (null == provider) {
-      LOGGER.warn(
-          Markers.IO.getMarker(),
-          "{} | Could not find a writer for {}.",
-          StatusCodes.NOT_FOUND.getCode(),
-          format);
-      throw new UnsupportedOperationException("Could not find a writer for " + format);
-    } else {
+
+    if (providers.containsKey(format)) {
+      final WriterProvider provider = providers.get(format);
       LOGGER.debug(
           Markers.IO.getMarker(),
           "{} | Returning a writer for {}.",
           StatusCodes.OK.getCode(),
           format);
-      return provider.newWriter(format);
+      return provider.newWriter(format).get();
+    } else {
+      LOGGER.warn(
+          Markers.IO.getMarker(),
+          "{} | Could not find a writer for {}.",
+          StatusCodes.NOT_FOUND.getCode(),
+          format);
+      throw new ExecutionError(
+          String.format("Could not find a writer for %s", format),
+          new UnsupportedOperationException(),
+          Markers.IO.getMarker(),
+          StatusCodes.NOT_FOUND);
     }
   }
 
   private void registerProvider(final Formats format, final WriterProvider provider) {
-    providers.putIfAbsent(format, provider);
+    providers.put(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
         "{} | Registered a provider of writers for {} ({}).",

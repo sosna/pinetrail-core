@@ -3,6 +3,7 @@ package io.pinesoft.trail.api.io;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.pinesoft.trail.util.ExecutionError;
 import org.junit.jupiter.api.Test;
 
 class WritersTest {
@@ -15,10 +16,7 @@ class WritersTest {
 
   @Test()
   void unsupportedFormat() {
-    assertThrows(
-        UnsupportedOperationException.class,
-        () -> {
-          Writers.valueOf("INSTANCE").newWriter(Formats.valueOf("KML_2_2_0"));
-        });
+    final Formats format = Formats.valueOf("KML_2_2_0");
+    assertThrows(ExecutionError.class, () -> Writers.INSTANCE.newWriter(format));
   }
 }
