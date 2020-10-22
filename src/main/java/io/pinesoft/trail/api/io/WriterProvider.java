@@ -20,4 +20,18 @@ public interface WriterProvider {
    * @return a new instance of a {@code Writer} implementation
    */
   Optional<Writer> newWriter(final Formats format);
+
+  /**
+   * Returns a new instance of a {@code Writer} implementation.
+   *
+   * @return a new instance of a {@code Writer} implementation
+   */
+  Writer newWriter();
+
+  /**
+   * Returns the format supported by this writer.
+   *
+   * @return the format supported by this writer.
+   */
+  Formats getFormat();
 }

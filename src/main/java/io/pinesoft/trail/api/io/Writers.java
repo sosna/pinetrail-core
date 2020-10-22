@@ -23,12 +23,13 @@ public enum Writers {
   INSTANCE;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Writers.class);
-  private final Map<Formats, WriterProvider> providers;
-  private final ServiceLoader<WriterProvider> loader;
+  private static final Map<Formats, WriterProvider> PROVIDERS;
 
-  Writers() {
-    providers = new EnumMap<>(Formats.class);
-    loader = ServiceLoader.load(WriterProvider.class);
+  static {
+    PROVIDERS = new EnumMap<>(Formats.class);
+    for (final WriterProvider provider : ServiceLoader.load(WriterProvider.class)) {
+      registerProvider(provider.getFormat(), provider);
+    }
   }
 
   /**
@@ -40,23 +41,14 @@ public enum Writers {
    *     supplied format.
    */
   public Writer newWriter(final Formats format) {
-    if (!(providers.containsKey(format))) {
-      for (final WriterProvider tmpProvider : loader) {
-        if (tmpProvider.newWriter(format).isPresent()) {
-          registerProvider(format, tmpProvider);
-          break;
-        }
-      }
-    }
-
-    if (providers.containsKey(format)) {
-      final WriterProvider provider = providers.get(format);
+    if (PROVIDERS.containsKey(format)) {
+      final WriterProvider provider = PROVIDERS.get(format);
       LOGGER.debug(
           Markers.IO.getMarker(),
           "{} | Returning a writer for {}.",
           StatusCodes.OK.getCode(),
           format);
-      return provider.newWriter(format).get();
+      return provider.newWriter();
     } else {
       LOGGER.warn(
           Markers.IO.getMarker(),
@@ -71,8 +63,8 @@ public enum Writers {
     }
   }
 
-  private void registerProvider(final Formats format, final WriterProvider provider) {
-    providers.put(format, provider);
+  private static void registerProvider(final Formats format, final WriterProvider provider) {
+    PROVIDERS.put(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
         "{} | Registered a provider of writers for {} ({}).",

@@ -16,6 +16,16 @@ public class TestWriterProvider implements WriterProvider {
     return Optional.ofNullable(Formats.GPX_1_1 == format ? new TestWriter() : null);
   }
 
+  @Override
+  public Writer newWriter() {
+    return new TestWriter();
+  }
+
+  @Override
+  public Formats getFormat() {
+    return Formats.GPX_1_1;
+  }
+
   private static final class TestWriter implements Writer {
 
     public TestWriter() {
