@@ -29,9 +29,9 @@ public interface WriterProvider {
   Writer newWriter();
 
   /**
-   * Returns the format supported by this writer.
+   * Returns the format supported by this provider.
    *
-   * @return the format supported by this writer.
+   * @return the format supported by this provider.
    */
   Formats getFormat();
 }
