@@ -1,23 +1,24 @@
 plugins {
-  id 'java-library'
-  id 'com.diffplug.spotless' version '5.6.1'
-  id 'com.github.spotbugs' version '4.5.0'
-  id 'de.aaschmid.cpd' version '3.1'
-  id 'info.solidsoft.pitest' version '1.5.2'
-  id 'jacoco'
-  id 'pmd'
+    id 'java-library'
+    id 'com.diffplug.spotless' version '5.6.1'
+    id 'com.github.spotbugs' version '4.5.0'
+    id 'de.aaschmid.cpd' version '3.1'
+    id 'info.solidsoft.pitest' version '1.5.2'
+    id 'jacoco'
+    id 'pmd'
 }
 
 repositories {
-  jcenter()
+    jcenter()
 }
 
 dependencies {
-  implementation 'org.slf4j:slf4j-api:1.7.30'
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-  testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.4.2'
-  testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 }
 
 version = '1.0.0-SNAPSHOT'
@@ -26,70 +27,70 @@ sourceCompatibility = '11'
 targetCompatibility = '11'
 
 tasks.withType(JavaCompile) {
-  configure(options) {
-    options.compilerArgs << '-Xlint:all'
-    options.encoding = 'UTF-8'
-  }
+    configure(options) {
+        options.compilerArgs << '-Xlint:all'
+        options.encoding = 'UTF-8'
+    }
 }
 
 test {
-  useJUnitPlatform()
-  finalizedBy jacocoTestReport 
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
-  reports {
-    xml.enabled true
-  }
-  dependsOn test
+    reports {
+        xml.enabled true
+    }
+    dependsOn test
 }
 
 jacocoTestCoverageVerification {
-  violationRules {
-    rule {
-      limit {
-        counter = 'CLASS'
-        value = 'COVEREDRATIO'
-        minimum = 1.0
-      }
-      limit {
-        counter = 'METHOD'
-        value = 'COVEREDRATIO'
-        minimum = 1.0
-      }
-      limit {
-        counter = 'LINE'
-        value = 'COVEREDRATIO'
-        minimum = 1.0
-      }
-      limit {
-        counter = 'BRANCH'
-        value = 'COVEREDRATIO'
-        minimum = 0.9
-      }
-      limit {
-        counter = 'INSTRUCTION'
-        value = 'COVEREDRATIO'
-        minimum = 1.0
-      }
+    violationRules {
+        rule {
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.9
+            }
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+        }
     }
-  }
 }
 check.dependsOn jacocoTestCoverageVerification
 
 spotbugsMain {
-  reports {
-    html {
-      enabled = true
-      destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
-      stylesheet = 'fancy-hist.xsl'
+    reports {
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
     }
-  }
 }
 
 pmd {
-		ignoreFailures = true
-		sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    sourceSets = [sourceSets.main]
 }
 
 cpdCheck {
@@ -102,9 +103,9 @@ cpdCheck {
 check.dependsOn(cpdCheck)
 
 spotless {
-  java {
-    googleJavaFormat()
-  }
+    java {
+        googleJavaFormat()
+    }
 }
 
 pitest {
@@ -116,13 +117,13 @@ pitest {
 }
 
 jar {
-  manifest {
-    attributes('Implementation-Title': project.name,
-               'Implementation-Version': project.version)
-  }
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
 }
 
 java {
-  withJavadocJar()
-  withSourcesJar()
+    withJavadocJar()
+    withSourcesJar()
 }

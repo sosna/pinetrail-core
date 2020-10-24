@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="ws.sosna.pinetrail.core" level="DEBUG"/>
+    <logger name="io.pinesoft.trail" level="DEBUG"/>
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />
