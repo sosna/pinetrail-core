@@ -1,5 +1,6 @@
 package io.pinesoft.trail.api.io;
 
+import io.pinesoft.trail.util.ExecutionError;
 import io.pinesoft.trail.util.Markers;
 import io.pinesoft.trail.util.StatusCodes;
 import java.util.EnumMap;
@@ -21,17 +22,14 @@ public enum Readers {
   /** Singleton instance of Pinetrail readers. */
   INSTANCE;
 
-  private final Map<Formats, ReaderProvider> providers;
-  private final Logger LOGGER = LoggerFactory.getLogger(Readers.class);
-  private final ServiceLoader<ReaderProvider> loader;
+  private static final Logger LOGGER = LoggerFactory.getLogger(Readers.class);
+  private static final Map<Formats, ReaderProvider> PROVIDERS;
 
-  Readers() {
-    LOGGER.info(
-        Markers.CONFIG.getMarker(),
-        "{} | Created a registry of readers services.",
-        StatusCodes.OK.getCode());
-    this.providers = new EnumMap<>(Formats.class);
-    loader = ServiceLoader.load(ReaderProvider.class);
+  static {
+    PROVIDERS = new EnumMap<>(Formats.class);
+    for (final ReaderProvider provider : ServiceLoader.load(ReaderProvider.class)) {
+      registerProvider(provider.getFormat(), provider);
+    }
   }
 
   /**
@@ -39,38 +37,33 @@ public enum Readers {
    *
    * @param format the format the file is in
    * @return a reader that will process the supplied file
-   * @throws UnsupportedOperationException if there is no provider of readers for the supplied
-   *     format.
+   * @throws ExecutionError if there is no provider of readers for the supplied format.
    */
   public Reader newReader(final Formats format) {
-    if (!(providers.containsKey(format))) {
-      for (final ReaderProvider tmpProvider : loader) {
-        if (null != tmpProvider.newReader(format)) {
-          registerProvider(format, tmpProvider);
-          break;
-        }
-      }
-    }
-    final ReaderProvider provider = providers.get(format);
-    if (null == provider) {
-      LOGGER.warn(
-          Markers.IO.getMarker(),
-          "{} | Could not find a reader for {}.",
-          StatusCodes.NOT_FOUND.getCode(),
-          format);
-      throw new UnsupportedOperationException("Could not find a reader for " + format);
-    } else {
+    if (PROVIDERS.containsKey(format)) {
+      final ReaderProvider provider = PROVIDERS.get(format);
       LOGGER.debug(
           Markers.IO.getMarker(),
           "{} | Returning a reader for {}.",
           StatusCodes.OK.getCode(),
           format);
-      return provider.newReader(format);
+      return provider.newReader();
+    } else {
+      LOGGER.warn(
+          Markers.IO.getMarker(),
+          "{} | Could not find a reader for {}.",
+          StatusCodes.NOT_FOUND.getCode(),
+          format);
+      throw new ExecutionError(
+          String.format("Could not find a reader for %s", format),
+          new UnsupportedOperationException(),
+          Markers.IO.getMarker(),
+          StatusCodes.NOT_FOUND);
     }
   }
 
-  private void registerProvider(final Formats format, final ReaderProvider provider) {
-    providers.putIfAbsent(format, provider);
+  private static void registerProvider(final Formats format, final ReaderProvider provider) {
+    PROVIDERS.put(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
         "{} | Registered a provider of readers for {} ({}).",

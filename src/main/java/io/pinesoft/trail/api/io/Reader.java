@@ -2,7 +2,8 @@ package io.pinesoft.trail.api.io;
 
 import io.pinesoft.trail.model.GpsRecord;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.Collection;
+import java.util.SortedSet;
 import java.util.function.Function;
 
 /**
@@ -18,7 +19,7 @@ import java.util.function.Function;
  * @see GpsRecord
  * @see io.pinesoft.trail.util.ExecutionError
  */
-public interface Reader extends Function<Path, Set<GpsRecord>> {
+public interface Reader extends Function<Path, Collection<SortedSet<GpsRecord>>> {
 
   /**
    * Triggers the extraction of information about trails from the supplied file.
@@ -29,5 +30,5 @@ public interface Reader extends Function<Path, Set<GpsRecord>> {
    *     successfully.
    */
   @Override
-  Set<GpsRecord> apply(final Path fileLocation);
+  Collection<SortedSet<GpsRecord>> apply(final Path fileLocation);
 }
