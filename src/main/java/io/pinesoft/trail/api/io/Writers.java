@@ -5,6 +5,7 @@ import io.pinesoft.trail.util.Markers;
 import io.pinesoft.trail.util.StatusCodes;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public enum Writers {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Writers.class);
   private static final Map<Formats, WriterProvider> PROVIDERS;
+  private static final ResourceBundle msg = ResourceBundle.getBundle("messages");
 
   static {
     PROVIDERS = new EnumMap<>(Formats.class);
@@ -44,19 +46,16 @@ public enum Writers {
     if (PROVIDERS.containsKey(format)) {
       final WriterProvider provider = PROVIDERS.get(format);
       LOGGER.debug(
-          Markers.IO.getMarker(),
-          "{} | Returning a writer for {}.",
-          StatusCodes.OK.getCode(),
-          format);
+          Markers.IO.getMarker(), msg.getString("WriterFound"), StatusCodes.OK.getCode(), format);
       return provider.newWriter();
     } else {
       LOGGER.warn(
           Markers.IO.getMarker(),
-          "{} | Could not find a writer for {}.",
+          msg.getString("WriterNotFound1"),
           StatusCodes.NOT_FOUND.getCode(),
           format);
       throw new ExecutionError(
-          String.format("Could not find a writer for %s", format),
+          String.format(msg.getString("WriterNotFound2"), format),
           new UnsupportedOperationException(),
           Markers.IO.getMarker(),
           StatusCodes.NOT_FOUND);
@@ -67,7 +66,7 @@ public enum Writers {
     PROVIDERS.put(format, provider);
     LOGGER.info(
         Markers.CONFIG.getMarker(),
-        "{} | Registered a provider of writers for {} ({}).",
+        msg.getString("RegisterWriter"),
         StatusCodes.OK.getCode(),
         format,
         provider.getClass().getCanonicalName());
