@@ -49,16 +49,10 @@ public enum Writers {
           Markers.IO.getMarker(), msg.getString("WriterFound"), StatusCodes.OK.getCode(), format);
       return provider.newWriter();
     } else {
-      LOGGER.warn(
-          Markers.IO.getMarker(),
-          msg.getString("WriterNotFound1"),
-          StatusCodes.NOT_FOUND.getCode(),
-          format);
+      final String out = String.format(msg.getString("WriterNotFound"), format);
+      LOGGER.warn(Markers.IO.getMarker(), "{} | {}", StatusCodes.NOT_FOUND.getCode(), out);
       throw new ExecutionError(
-          String.format(msg.getString("WriterNotFound2"), format),
-          new UnsupportedOperationException(),
-          Markers.IO.getMarker(),
-          StatusCodes.NOT_FOUND);
+          out, new UnsupportedOperationException(), Markers.IO.getMarker(), StatusCodes.NOT_FOUND);
     }
   }
 

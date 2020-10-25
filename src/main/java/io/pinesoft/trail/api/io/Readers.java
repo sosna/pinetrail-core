@@ -48,16 +48,10 @@ public enum Readers {
           Markers.IO.getMarker(), msg.getString("ReaderFound"), StatusCodes.OK.getCode(), format);
       return provider.newReader();
     } else {
-      LOGGER.warn(
-          Markers.IO.getMarker(),
-          msg.getString("ReaderNotFound1"),
-          StatusCodes.NOT_FOUND.getCode(),
-          format);
+      final String out = String.format(msg.getString("ReaderNotFound"), format);
+      LOGGER.warn(Markers.IO.getMarker(), "{} | {}", StatusCodes.NOT_FOUND.getCode(), out);
       throw new ExecutionError(
-          String.format(msg.getString("ReaderNotFound2"), format),
-          new UnsupportedOperationException(),
-          Markers.IO.getMarker(),
-          StatusCodes.NOT_FOUND);
+          out, new UnsupportedOperationException(), Markers.IO.getMarker(), StatusCodes.NOT_FOUND);
     }
   }
 
