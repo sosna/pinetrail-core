@@ -1,10 +1,12 @@
 package io.pinesoft.trail.api.io;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.pinesoft.trail.util.ExecutionError;
 import io.pinesoft.trail.util.StatusCodes;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 class FormatsTest {
@@ -25,25 +27,15 @@ class FormatsTest {
 
   @Test
   void throwNotAcceptable() {
-    try {
-      Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/logback-test.xml"));
-      fail("Expected 406");
-    } catch (final ExecutionError e) {
-      if (StatusCodes.UNSUPPORTED_FORMAT != e.getErrorCode()) {
-        fail("Expected 406 but got " + e.getErrorCode());
-      }
-    }
+    final Path path = FileSystems.getDefault().getPath(".", "src/test/resources/logback-test.xml");
+    final ExecutionError e = assertThrows(ExecutionError.class, () -> Formats.of(path));
+    assertEquals(StatusCodes.UNSUPPORTED_FORMAT, e.getErrorCode());
   }
 
   @Test
   void throwNotFound() {
-    try {
-      Formats.of(FileSystems.getDefault().getPath(".", "src/test/resources/nothere.why"));
-      fail("Expected 404");
-    } catch (final ExecutionError e) {
-      if (StatusCodes.NOT_FOUND != e.getErrorCode()) {
-        fail("Expected 404 but got " + e.getErrorCode());
-      }
-    }
+    final Path path = FileSystems.getDefault().getPath(".", "src/test/resources/nothere.why");
+    final ExecutionError e = assertThrows(ExecutionError.class, () -> Formats.of(path));
+    assertEquals(StatusCodes.NOT_FOUND, e.getErrorCode());
   }
 }
