@@ -16,7 +16,7 @@ class WritersTest {
 
   @Test()
   void unsupportedFormat() {
-    final Formats format = Formats.valueOf("KML_2_2_0");
+    final Formats format = Formats.KML_2_2_0;
     assertThrows(ExecutionError.class, () -> Writers.INSTANCE.newWriter(format));
   }
 }

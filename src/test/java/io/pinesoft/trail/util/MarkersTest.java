@@ -10,7 +10,7 @@ class MarkersTest {
 
   @Test
   void getMarker() {
-    final Markers audit = Markers.valueOf("IO");
+    final Markers audit = Markers.IO;
     final Marker marker = audit.getMarker();
     assertEquals("io", marker.getName());
   }

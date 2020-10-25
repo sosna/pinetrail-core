@@ -8,7 +8,7 @@ class StatusCodesTest {
 
   @Test
   void getCode() {
-    final StatusCodes result = StatusCodes.valueOf("OK");
+    final StatusCodes result = StatusCodes.OK;
     assertEquals(200, result.getCode());
   }
 }
