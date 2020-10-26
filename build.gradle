@@ -3,6 +3,7 @@ plugins {
     id 'com.diffplug.spotless' version '5.6.1'
     id 'info.solidsoft.pitest' version '1.5.2'
     id 'jacoco'
+    id 'org.sonarqube' version '3.0'
 }
 
 repositories {
@@ -75,18 +76,26 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 
-spotless {
-    java {
-        googleJavaFormat()
-    }
-}
-
 pitest {
     targetClasses = ['io.pinesoft.trail.*']
     threads = 4
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
     junit5PluginVersion = '0.12'
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.projectKey', 'sosna_pinetrail-core'
+        property 'sonar.organization', 'sosna'
+        property 'sonar.host.url', 'https://sonarcloud.io'
+    }
 }
 
 jar {
