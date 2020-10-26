@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +50,16 @@ public enum Formats {
    */
   public static Formats of(final Path fileLocation) {
     try (BufferedReader br = Files.newBufferedReader(fileLocation)) {
-      for (final String line : br.lines().limit(5).collect(Collectors.toList())) {
+      String line = br.readLine();
+      int count = 0;
+      while (line != null && count < 5) {
         if (line.contains("http://www.topografix.com/GPX/1/1")) {
           return GPX_1_1;
         } else if (line.contains("http://www.topografix.com/GPX/1/0")) {
           return GPX_1_0;
+        } else {
+          line = br.readLine();
+          count++;
         }
       }
       final String out =
