@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'com.diffplug.spotless' version '5.6.1'
+    id 'com.github.spotbugs' version '4.5.1'
     id 'info.solidsoft.pitest' version '1.5.2'
     id 'jacoco'
     id 'org.sonarqube' version '3.0'
@@ -87,6 +88,16 @@ pitest {
 spotless {
     java {
         googleJavaFormat()
+    }
+}
+
+spotbugsMain {
+    reports {
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
     }
 }
 
