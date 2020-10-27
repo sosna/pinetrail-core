@@ -1,5 +1,5 @@
 /**
- * Provides the classes representing Pinetrail information model.
+ * Provides the domain classes.
  *
  * @author Xavier Sosnovsky
  */

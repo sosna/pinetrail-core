@@ -4,16 +4,9 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- * Markers used in Pinetrail.
+ * Log markers used in Pinetrail.
  *
- * <p>Markers can be used to enrich log statements and typically address two different needs:
- *
- * <ul>
- *   <li>Triggering specific actions, such as, for example, sending an email in case the database is
- *       down;
- *   <li>Filtering the logs, for example to store all the performance-related log entries in a
- *       separate log file.
- * </ul>
+ * <p>The markers correspond to Pinetrail modules.
  *
  * <p>For additional information regarding markers, please refer to the <a
  * href="http://www.slf4j.org/docs.html">slf4j documentation</a>.
@@ -54,9 +47,9 @@ public enum Markers {
   }
 
   /**
-   * Gets the marker defined for the selected context.
+   * Gets the marker defined for the selected module.
    *
-   * @return the marker for the selected context
+   * @return the marker for the selected module
    */
   public Marker getMarker() {
     return this.marker;

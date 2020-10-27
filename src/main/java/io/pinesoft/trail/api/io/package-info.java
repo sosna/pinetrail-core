@@ -1,6 +1,5 @@
 /**
- * Defines the contracts to be implemented by Pinetrail modules reading and writing GPS data from/to
- * files in various formats.
+ * Provides the contracts to read and write GPS data from/to a variety of formats.
  *
  * <p>Pinetrail uses the service provider interface (SPI) available since Java SE 1.6 to allow
  * deploying new modules without modifying the original code base. Modules can be discovered by the

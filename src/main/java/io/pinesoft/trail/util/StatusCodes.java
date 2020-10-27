@@ -24,11 +24,7 @@ public enum StatusCodes {
     this.code = code;
   }
 
-  /**
-   * Returns the code to be used in the log entry to summarise the result of the action.
-   *
-   * @return the code that summarises the result of an action.
-   */
+  /** @return the code that summarises the result of an action. */
   public int getCode() {
     return code;
   }
