@@ -10,8 +10,11 @@ final class GpsRecordImpl implements GpsRecord {
   private final double longitude;
   private final double elevation;
   private final long time;
-  private final transient int cachedCode;
+  private final int cachedCode;
   private static final ResourceBundle msg = ResourceBundle.getBundle("messages");
+  private static final int LAT_BOUNDARY = 90;
+  private static final int LON_BOUNDARY = 180;
+  private static final int ODD_PRIME = 31;
 
   GpsRecordImpl(
       final double longitude, final double latitude, final double elevation, final long time) {
@@ -83,20 +86,24 @@ final class GpsRecordImpl implements GpsRecord {
 
   private int calculateHash() {
     int result = Double.hashCode(longitude);
-    result = 31 * result + Double.hashCode(latitude);
-    result = 31 * result + Double.hashCode(elevation);
-    result = 31 * result + Long.hashCode(time);
+    result = ODD_PRIME * result + Double.hashCode(latitude);
+    result = ODD_PRIME * result + Double.hashCode(elevation);
+    result = ODD_PRIME * result + Long.hashCode(time);
     return result;
   }
 
   private static void checkLongitude(final double in) {
-    if (Double.isNaN(in) || Double.compare(in, 180) != -1 || Double.compare(in, -180) == -1) {
+    if (Double.isNaN(in)
+        || Double.compare(in, LON_BOUNDARY) != -1
+        || Double.compare(in, -LON_BOUNDARY) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLongitude"), in));
     }
   }
 
   private static void checkLatitude(final double in) {
-    if (Double.isNaN(in) || Double.compare(in, 90) == 1 || Double.compare(in, -90) == -1) {
+    if (Double.isNaN(in)
+        || Double.compare(in, LAT_BOUNDARY) == 1
+        || Double.compare(in, -LAT_BOUNDARY) == -1) {
       throw new IllegalArgumentException(String.format(msg.getString("IllegalLatitude"), in));
     }
   }
