@@ -1,7 +1,7 @@
 package io.pinesoft.trail.model;
 
 /**
- * The coordinates of a point, expressed as longitude and latitude (aka easting and northing).
+ * The coordinates of a point, expressed as longitude and latitude.
  *
  * <p>The coordinates are expressed in decimal degrees with WGS84 datum.
  *

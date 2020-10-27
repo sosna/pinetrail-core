@@ -7,7 +7,7 @@ import java.util.SortedSet;
 import java.util.function.Function;
 
 /**
- * Contract for services that extract information about trails.
+ * Contract for services that parse GPS log records.
  *
  * <p>A reader service typically processes a file in a particular format (GPX, KML, GeoJSON, etc.)
  * and returns the extracted {@code GpsRecord}s found.

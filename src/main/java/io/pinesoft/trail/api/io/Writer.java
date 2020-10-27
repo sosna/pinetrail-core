@@ -6,10 +6,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 /**
- * Contract for services that write information about trails to a file.
- *
- * <p>A writer service typically outputs information about a trail to a file in a particular format
- * (GPX, KML, GeoJSON, etc.).
+ * Contract for services that persist GPS log records.
  *
  * <p>Implementers of this interface are expected to report any issue preventing their process to
  * complete successfully using an {@code ExecutionError}.

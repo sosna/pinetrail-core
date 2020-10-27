@@ -1,7 +1,7 @@
 package io.pinesoft.trail.model;
 
 /**
- * A GPS Log Record (time and 3D coordinates).
+ * A GPS Log Record (longitude, latitude, elevation and time).
  *
  * <p>The longitude and latitude are expressed in decimal degrees with WGS84 datum. The elevation is
  * expressed in meters, above or below the WGS 84 reference ellipsoid.
