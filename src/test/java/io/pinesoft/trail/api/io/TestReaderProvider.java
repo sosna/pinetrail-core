@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.SortedSet;
 
 public class TestReaderProvider implements ReaderProvider {
@@ -15,12 +16,22 @@ public class TestReaderProvider implements ReaderProvider {
 
   @Override
   public Optional<Reader> newReader(final Formats format) {
-    return Optional.ofNullable(Formats.GPX_1_1 == format ? new TestReader() : null);
+    return Optional.ofNullable(Formats.GPX_1_1 == format ? new TestReader(null) : null);
+  }
+
+  @Override
+  public Optional<Reader> newReader(Formats format, Properties props) {
+    return Optional.ofNullable(Formats.GPX_1_1 == format ? new TestReader(props) : null);
   }
 
   @Override
   public Reader newReader() {
-    return new TestReader();
+    return new TestReader(null);
+  }
+
+  @Override
+  public Reader newReader(Properties props) {
+    return new TestReader(props);
   }
 
   @Override
@@ -30,8 +41,11 @@ public class TestReaderProvider implements ReaderProvider {
 
   private static final class TestReader implements Reader {
 
-    public TestReader() {
+    final Properties props;
+
+    public TestReader(final Properties props) {
       super();
+      this.props = null;
     }
 
     @Override
